@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Work — Mansimar Wadhera</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --black: #0E0E0D;
+  --white: #FFFFFF;
+  --grey-light: #EFEFED;
+  --grey-mid:  #BFBDB8;
+  --grey-text: #4A4845;
+  --beige:     #E8E5DF;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--white);
+  color: var(--black);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  cursor: none;
+}
+
+#blob {
+  position: fixed;
+  top: 0; left: 0;
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: transparent;
+  border: 1.5px solid var(--black);
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: width .45s cubic-bezier(.22,1,.36,1), height .45s cubic-bezier(.22,1,.36,1);
+  will-change: transform, width, height;
+}
+#blob.expanded { width: 56px; height: 56px; }
+#blob.clicking { width: 24px; height: 24px; transition-duration: .12s; }
+
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 200;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  padding: 0 48px;
+  height: 68px;
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--beige);
+}
+
+.nav-left {
+  display: flex;
+  gap: 48px;
+  list-style: none;
+  justify-self: start;
+}
+
+.nav-name {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--black);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  justify-self: center;
+}
+
+.nav-right {
+  display: flex;
+  gap: 48px;
+  list-style: none;
+  justify-self: end;
+}
+
+.nav-left a, .nav-right a {
+  font-size: 13px;
+  font-weight: 400;
+  color: transparent;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  padding-bottom: 4px;
+}
+
+.nav-left a::before, .nav-right a::before {
+  content: attr(data-text);
+  position: absolute;
+  top: 0; left: 0;
+  color: var(--black);
+  transition: transform 0.3s cubic-bezier(.22,1,.36,1);
+}
+
+.nav-left a::after, .nav-right a::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 100%; left: 0;
+  color: var(--black);
+  transition: transform 0.3s cubic-bezier(.22,1,.36,1);
+}
+
+.nav-left a:not(.active):hover::before,
+.nav-right a:not(.active):hover::before { transform: translateY(-100%); }
+
+.nav-left a:not(.active):hover::after,
+.nav-right a:not(.active):hover::after { transform: translateY(-100%); }
+
+.nav-left a.active, .nav-right a.active {
+  font-weight: 700;
+  overflow: hidden;
+  box-shadow: 0 1.5px 0 0 var(--black);
+}
+.nav-left a.active::before, .nav-right a.active::before { font-weight: 700; }
+
+/* ── PAGE HEADER ── */
+.page-header {
+  padding: 120px 48px 48px;
+  border-bottom: 1px solid var(--beige);
+}
+
+.page-title {
+  font-size: clamp(52px, 8vw, 112px);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 0.88;
+  color: var(--black);
+}
+
+/* ── PROJECTS — exactly like original index 2-col ── */
+.projects-wrap { padding: 0 48px; }
+.project-row { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid var(--beige); }
+.project-row-single { grid-template-columns: 1fr 1fr; }
+.project-row-single .project-item:first-child { border-right: 1px solid var(--beige); padding-right: 32px; padding-left: 0; }
+.project-row-single .project-item:last-child { padding-left: 0; }
+.project-item { display: block; text-decoration: none; color: inherit; overflow: hidden; }
+.project-item:first-child { border-right: 1px solid var(--beige); padding-right: 32px; }
+.project-item:last-child  { padding-left: 32px; }
+.project-header { display: flex; justify-content: space-between; align-items: baseline; padding: 18px 0 12px; border-bottom: 1px solid var(--beige); gap: 12px; }
+.project-name { font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--black); }
+.project-category { font-size: 14px; color: var(--grey-text); font-weight: 300; white-space: nowrap; flex-shrink: 0; }
+.project-image {
+  width: 100%; aspect-ratio: 4/3;
+  background: var(--grey-light);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; color: var(--grey-mid); letter-spacing: .04em;
+  overflow: hidden;
+  transition: transform .7s cubic-bezier(.22,1,.36,1);
+}
+.project-item:hover .project-image { transform: scale(1.04); }
+.project-image img { width:100%; height:100%; object-fit:cover; display:block; }
+.project-footer { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; }
+.project-sub { font-size: 13px; color: var(--grey-text); font-weight: 300; }
+.project-link {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--black);
+  opacity: 0;
+  transform: translateX(-8px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.project-item:hover .project-link {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.tint-blue  { background: #DCE9F5; }
+.tint-lilac { background: #E5E0F5; }
+.tint-sage  { background: #DCF0E8; }
+.tint-warm  { background: #F5EFE0; }
+
+/* ── DARK MODE ── */
+body.dark {
+  --black: #F0EFEC;
+  --white: #0E0E0D;
+  --grey-light: #1C1C1A;
+  --grey-mid:  #3A3A38;
+  --grey-text: #D4D2CD;
+  --beige:     #3A3A38;
+}
+body.dark nav { background: rgba(14,14,13,0.92); }
+
+/* ── THEME TOGGLE ── */
+.theme-toggle {
+  position: fixed;
+  top: 80px; left: 32px;
+  z-index: 300;
+  width: 52px; height: 30px;
+  border-radius: 100px;
+  background: var(--grey-light);
+  border: 1px solid var(--beige);
+  cursor: none;
+  padding: 4px;
+  transition: background 0.4s ease, border-color 0.4s ease;
+  display: flex;
+  align-items: center;
+}
+.theme-toggle-knob {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: var(--black);
+  transition: transform 0.4s cubic-bezier(.22,1,.36,1);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; flex-shrink: 0;
+}
+body.dark .theme-toggle-knob { transform: translateX(22px); }
+
+/* ── FOOTER ── */
+footer {
+  border-top: 1px solid var(--beige);
+  padding: 32px 48px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  color: var(--grey-text);
+}
+footer a {
+  color: transparent;
+  text-decoration: none;
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  padding-bottom: 3px;
+}
+footer a::before {
+  content: attr(data-text);
+  position: absolute;
+  top: 0; left: 0;
+  color: var(--grey-text);
+  transition: transform 0.3s cubic-bezier(.22,1,.36,1);
+}
+footer a::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 100%; left: 0;
+  color: var(--grey-text);
+  transition: transform 0.3s cubic-bezier(.22,1,.36,1);
+}
+footer a:hover::before { transform: translateY(-100%); }
+footer a:hover::after { transform: translateY(-100%); }
+.footer-links { display: flex; gap: 28px; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 768px) {
+  body { cursor: auto; }
+  #blob { display: none; }
+  nav { grid-template-columns: 1fr 1fr; padding: 0 20px; height: 56px; }
+  .nav-left { gap: 20px; }
+  .nav-right { gap: 20px; }
+  .nav-name { display: none; }
+  .page-header { padding: 90px 20px 32px; }
+  .projects-wrap { padding: 0 20px; }
+  .project-row { grid-template-columns: 1fr; }
+  .project-item:first-child { border-right: none; padding-right: 0; border-bottom: 1px solid var(--beige); }
+  .project-item:last-child { padding-left: 0; }
+  footer { padding: 24px 20px; flex-direction: column; gap: 14px; text-align: center; }
+  .footer-links { flex-wrap: wrap; justify-content: center; }
+}
+</style>
+</head>
+<body>
+
+<div id="blob"></div>
+
+<nav>
+  <ul class="nav-left">
+    <li><a href="index.html" data-text="Home">Home</a></li>
+    <li><a href="projects.html" data-text="Work" class="active">Work</a></li>
+  </ul>
+  <span class="nav-name">Mansimar Wadhera</span>
+  <ul class="nav-right">
+    <li><a href="other.html" data-text="Other">Other</a></li>
+    <li><a href="REPLACE_WITH_GOOGLE_DRIVE_LINK" target="_blank" data-text="Resume">Resume</a></li>
+  </ul>
+</nav>
+
+<div class="page-header">
+  <h1 class="page-title">LATEST PROJECTS<br>& CASE STUDIES</h1>
+</div>
+
+<div class="projects-wrap">
+  <div class="project-row">
+    <a href="star-alliance-case-study.html" class="project-item">
+      <div class="project-header">
+        <span class="project-name">Star Alliance</span>
+        <span class="project-category">Mobile Application</span>
+      </div>
+      <div class="project-image tint-lilac">
+        <img src="star-alliance-cover.png" alt="Star Alliance">
+      </div>
+      <div class="project-footer">
+        <span class="project-sub">Summer 2025 (6 weeks)</span>
+        <span class="project-link">View Project →</span>
+      </div>
+    </a>
+    <a href="gdg-case-study.html" class="project-item">
+      <div class="project-header">
+        <span class="project-name">Google Developer Group Vancouver</span>
+        <span class="project-category">Mobile Application</span>
+      </div>
+      <div class="project-image tint-blue">
+        <img src="gdg-cover.png" alt="Google Developer Group Vancouver">
+      </div>
+      <div class="project-footer">
+        <span class="project-sub">Spring 2025 (10 weeks)</span>
+        <span class="project-link">View Project →</span>
+      </div>
+    </a>
+  </div>
+
+  <div class="project-row">
+    <a href="swissfilms-case-study.html" class="project-item">
+      <div class="project-header">
+        <span class="project-name">Swissfilms 2025</span>
+        <span class="project-category">Microsite Design</span>
+      </div>
+      <div class="project-image tint-sage">
+        <img src="swissfilms-cover.png" alt="Swissfilms 2025">
+      </div>
+      <div class="project-footer">
+        <span class="project-sub">Summer 2025 (4 weeks)</span>
+        <span class="project-link">View Project →</span>
+      </div>
+    </a>
+    <a href="jazzdor-case-study.html" class="project-item">
+      <div class="project-header">
+        <span class="project-name">Jazzdor Festival</span>
+        <span class="project-category">Microsite Design</span>
+      </div>
+      <div class="project-image tint-warm">
+        <img src="jazzdor-cover.png" alt="Jazzdor Festival">
+      </div>
+      <div class="project-footer">
+        <span class="project-sub">Fall 2024 (5 weeks)</span>
+        <span class="project-link">View Project →</span>
+      </div>
+    </a>
+  </div>
+
+  <div class="project-row project-row-single">
+    <a href="miles-apart-case-study.html" class="project-item">
+      <div class="project-header">
+        <span class="project-name">Miles Apart</span>
+        <span class="project-category">Mobile Application</span>
+      </div>
+      <div class="project-image tint-blue">
+        <img src="milesapart-cover.png" alt="Miles Apart">
+      </div>
+      <div class="project-footer">
+        <span class="project-sub">Fall 2025 (5 weeks)</span>
+        <span class="project-link">View Project →</span>
+      </div>
+    </a>
+  </div>
+</div>
+
+<footer>
+  <span>© 2026 Mansimar Wadhera</span>
+  <div class="footer-links">
+    <a href="https://linkedin.com/in/mansimarwadhera10-bb5537276" target="_blank" data-text="LinkedIn ↗">LinkedIn ↗</a>
+    <a href="#" data-text="Instagram ↗">Instagram ↗</a>
+    <a href="mailto:mansimarwadhera1026@gmail.com" data-text="Email ↗">Email ↗</a>
+  </div>
+</footer>
+
+<button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+  <div class="theme-toggle-knob" id="toggleKnob">☀️</div>
+</button>
+
+<script>
+const blob = document.getElementById('blob');
+let bx = -100, by = -100, mx = -100, my = -100;
+function lerp(a,b,t){ return a+(b-a)*t; }
+(function tick(){
+  bx = lerp(bx, mx, 0.13);
+  by = lerp(by, my, 0.13);
+  blob.style.left = bx + 'px';
+  blob.style.top  = by + 'px';
+  requestAnimationFrame(tick);
+})();
+document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+document.querySelectorAll('a, button').forEach(el => {
+  el.addEventListener('mouseenter', () => blob.classList.add('expanded'));
+  el.addEventListener('mouseleave', () => blob.classList.remove('expanded'));
+});
+document.addEventListener('mousedown', () => blob.classList.add('clicking'));
+document.addEventListener('mouseup',   () => blob.classList.remove('clicking'));
+
+const toggle = document.getElementById('themeToggle');
+const knob   = document.getElementById('toggleKnob');
+let dark = false;
+toggle.addEventListener('click', () => {
+  dark = !dark;
+  document.body.classList.toggle('dark', dark);
+  knob.textContent = dark ? '🌙' : '☀️';
+  localStorage.setItem('theme', dark ? 'dark' : 'light');
+});
+if (localStorage.getItem('theme') === 'dark') {
+  dark = true;
+  document.body.classList.add('dark');
+  knob.textContent = '🌙';
+}
+toggle.addEventListener('mouseenter', () => blob.classList.add('expanded'));
+toggle.addEventListener('mouseleave', () => blob.classList.remove('expanded'));
+</script>
+</body>
+</html>
