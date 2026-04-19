@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GDG Vancouver — Mansimar Wadhera</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --black: #0E0E0D;
+  --white: #FFFFFF;
+  --grey-light: #EFEFED;
+  --grey-mid:  #BFBDB8;
+  --grey-text: #4A4845;
+  --beige:     #E8E5DF;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--white);
+  color: var(--black);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  cursor: none;
+}
+
+#blob {
+  position: fixed;
+  top: 0; left: 0;
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: transparent;
+  border: 1.5px solid var(--black);
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: width .45s cubic-bezier(.22,1,.36,1), height .45s cubic-bezier(.22,1,.36,1);
+  will-change: transform, width, height;
+}
+#blob.expanded { width: 56px; height: 56px; }
+#blob.clicking { width: 24px; height: 24px; transition-duration: .12s; }
+
+/* ── NAV ── */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 200;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  padding: 0 48px;
+  height: 68px;
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--beige);
+}
+
+.nav-left { display: flex; gap: 48px; list-style: none; justify-self: start; }
+.nav-name { font-size: 18px; font-weight: 700; color: var(--black); letter-spacing: 0.08em; text-transform: uppercase; justify-self: center; }
+.nav-right { display: flex; gap: 48px; list-style: none; justify-self: end; }
+
+.nav-left a, .nav-right a {
+  font-size: 13px; font-weight: 400; color: transparent;
+  text-decoration: none; text-transform: uppercase; letter-spacing: 0.08em;
+  position: relative; display: inline-block; overflow: hidden; padding-bottom: 4px;
+}
+.nav-left a::before, .nav-right a::before { content: attr(data-text); position: absolute; top: 0; left: 0; color: var(--black); transition: transform 0.3s cubic-bezier(.22,1,.36,1); }
+.nav-left a::after, .nav-right a::after { content: attr(data-text); position: absolute; top: 100%; left: 0; color: var(--black); transition: transform 0.3s cubic-bezier(.22,1,.36,1); }
+.nav-left a:not(.active):hover::before, .nav-right a:not(.active):hover::before { transform: translateY(-100%); }
+.nav-left a:not(.active):hover::after, .nav-right a:not(.active):hover::after { transform: translateY(-100%); }
+.nav-left a.active, .nav-right a.active { font-weight: 700; overflow: hidden; box-shadow: 0 1.5px 0 0 var(--black); }
+.nav-left a.active::before, .nav-right a.active::before { font-weight: 700; }
+
+/* ── HERO ── */
+.case-hero {
+  padding: 140px 48px 64px;
+  border-bottom: 1px solid var(--beige);
+}
+
+.case-hero-top {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: start;
+  margin-bottom: 32px;
+}
+
+.case-title {
+  font-size: clamp(52px, 7vw, 96px);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 0.88;
+  color: var(--black);
+}
+
+/* Metadata table with dividers like Bliss+ */
+.case-meta {
+  display: flex;
+  flex-direction: column;
+  margin-top: 8px;
+}
+
+.meta-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--beige);
+  gap: 24px;
+}
+
+.meta-label {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--grey-text);
+  flex-shrink: 0;
+}
+
+.meta-value {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--black);
+  text-align: right;
+}
+
+.case-intro {
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--grey-text);
+  margin-bottom: 32px;
+}
+
+.case-cover {
+  width: 100%;
+  aspect-ratio: 16/8;
+  background: #DCE9F5;
+  overflow: hidden;
+  border-radius: 4px;
+}
+.case-cover video { width: 100%; height: 100%; object-fit: cover; display: block; }
+.case-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* ── LAYOUT ── */
+.case-body {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  min-height: 100vh;
+}
+
+/* ── SIDEBAR ── */
+.case-sidebar {
+  position: sticky;
+  top: 68px;
+  height: calc(100vh - 68px);
+  overflow-y: auto;
+  padding: 48px 32px;
+  border-right: 1px solid var(--beige);
+}
+
+.sidebar-nav { display: flex; flex-direction: column; gap: 0; list-style: none; }
+
+.sidebar-nav a {
+  font-size: 14px;
+  font-weight: 300;
+  color: var(--grey-text);
+  text-decoration: none;
+  padding: 10px 0;
+  display: block;
+  transition: color 0.2s;
+}
+
+.sidebar-nav a:hover { color: var(--black); }
+.sidebar-nav a.active { color: var(--black); font-weight: 500; }
+
+/* ── CONTENT ── */
+.case-content { padding: 64px 64px 96px; }
+
+.case-section {
+  margin-bottom: 80px;
+  padding-top: 16px;
+  border-top: 1px solid var(--beige);
+  scroll-margin-top: 88px;
+}
+
+.case-section:first-child { border-top: none; padding-top: 0; }
+
+.section-layout {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 48px;
+  align-items: start;
+}
+
+.section-heading {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--black);
+  padding-top: 4px;
+  position: sticky;
+  top: 88px;
+}
+
+.section-body { display: flex; flex-direction: column; gap: 20px; }
+
+.section-body h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--black);
+  letter-spacing: -0.01em;
+  margin-bottom: 8px;
+}
+
+.section-body p {
+  font-size: 15px;
+  line-height: 1.78;
+  color: var(--grey-text);
+}
+
+.section-body p strong { color: var(--black); font-weight: 500; }
+
+/* ── OVERVIEW TABLE ── */
+.overview-table {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  border: 1px solid var(--beige);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-top: 8px;
+}
+
+.overview-row {
+  display: contents;
+}
+
+.overview-cell {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--beige);
+  border-right: 1px solid var(--beige);
+}
+
+.overview-cell:nth-child(even) { border-right: none; }
+.overview-cell:nth-last-child(-n+2) { border-bottom: none; }
+
+.overview-cell-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--grey-mid);
+  margin-bottom: 6px;
+}
+
+.overview-cell-value {
+  font-size: 14px;
+  color: var(--black);
+  line-height: 1.5;
+}
+
+/* ── NUMBERED METHOD CARDS ── */
+.method-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.method-card {
+  padding: 28px 24px;
+  border: 1px solid var(--beige);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: border-color 0.2s;
+}
+
+.method-card:hover { border-color: var(--black); }
+
+.method-num {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--grey-mid);
+}
+
+.method-card h4 {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--black);
+  line-height: 1.3;
+}
+
+.method-card p {
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--grey-text);
+}
+
+/* ── FINDING CARDS ── */
+.finding-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-top: 8px;
+}
+
+.finding-card {
+  display: grid;
+  grid-template-columns: 1fr;
+  padding: 24px 0 24px 20px;
+  border-left: 2px solid var(--beige);
+  margin-bottom: 16px;
+  transition: border-color 0.2s;
+}
+
+.finding-card:hover { border-left-color: var(--black); }
+.finding-card:last-child { margin-bottom: 0; }
+
+.finding-num {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--grey-mid);
+  margin-bottom: 8px;
+}
+
+.finding-card-text h4 {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--black);
+  margin-bottom: 8px;
+}
+
+.finding-card-text p {
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--grey-text);
+}
+
+/* ── CARDS GRID ── */
+.cards-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 8px;
+}
+
+.card {
+  background: var(--grey-light);
+  padding: 24px;
+  border-radius: 4px;
+}
+
+.card h4 {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--black);
+  margin-bottom: 8px;
+}
+
+.card p {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--grey-text);
+}
+
+/* ── FINDINGS LIST ── */
+.findings-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 8px;
+}
+
+.finding-item {
+  padding: 20px 24px;
+  border: 1px solid var(--beige);
+  border-radius: 4px;
+}
+
+.finding-item h4 {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--black);
+  margin-bottom: 6px;
+}
+
+.finding-item p {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--grey-text);
+}
+
+/* ── IMAGE BLOCK ── */
+.img-block {
+  width: 100%;
+  border-radius: 4px;
+  overflow: hidden;
+  background: var(--grey-light);
+  margin-top: 8px;
+}
+
+.img-block img { width: 100%; display: block; }
+
+.img-block-full {
+  width: 100%;
+  overflow: hidden;
+  margin-top: 8px;
+}
+
+.img-block-full img { width: 100%; display: block; }
+
+.img-caption {
+  font-size: 12px;
+  color: var(--grey-mid);
+  text-align: center;
+  padding: 10px 0 0;
+}
+
+/* ── DARK MODE ── */
+body.dark {
+  --black: #F0EFEC;
+  --white: #0E0E0D;
+  --grey-light: #1C1C1A;
+  --grey-mid:  #3A3A38;
+  --grey-text: #D4D2CD;
+  --beige:     #3A3A38;
+}
+body.dark nav { background: rgba(14,14,13,0.92); }
+body.dark .case-cover { background: #1A2535; }
+
+/* ── THEME TOGGLE ── */
+.theme-toggle {
+  position: fixed; top: 80px; left: 32px; z-index: 300;
+  width: 52px; height: 30px; border-radius: 100px;
+  background: var(--grey-light); border: 1px solid var(--beige);
+  cursor: none; padding: 4px;
+  transition: background 0.4s ease, border-color 0.4s ease;
+  display: flex; align-items: center;
+}
+.theme-toggle-knob {
+  width: 22px; height: 22px; border-radius: 50%;
+  background: var(--black);
+  transition: transform 0.4s cubic-bezier(.22,1,.36,1);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; flex-shrink: 0;
+}
+body.dark .theme-toggle-knob { transform: translateX(22px); }
+
+/* ── FOOTER ── */
+footer {
+  border-top: 1px solid var(--beige);
+  padding: 32px 48px;
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 13px; color: var(--grey-text);
+}
+footer a { color: transparent; text-decoration: none; position: relative; display: inline-block; overflow: hidden; padding-bottom: 3px; }
+footer a::before { content: attr(data-text); position: absolute; top: 0; left: 0; color: var(--grey-text); transition: transform 0.3s cubic-bezier(.22,1,.36,1); }
+footer a::after { content: attr(data-text); position: absolute; top: 100%; left: 0; color: var(--grey-text); transition: transform 0.3s cubic-bezier(.22,1,.36,1); }
+footer a:hover::before { transform: translateY(-100%); }
+footer a:hover::after { transform: translateY(-100%); }
+.footer-links { display: flex; gap: 28px; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 1024px) {
+  .case-body { grid-template-columns: 180px 1fr; }
+  .case-content { padding: 48px 40px 80px; }
+  .section-layout { grid-template-columns: 160px 1fr; gap: 32px; }
+}
+
+@media (max-width: 768px) {
+  body { cursor: auto; }
+  #blob { display: none; }
+  nav { grid-template-columns: 1fr 1fr; padding: 0 20px; height: 56px; }
+  .nav-left { gap: 20px; }
+  .nav-right { gap: 20px; }
+  .nav-name { display: none; }
+  .case-hero { padding: 90px 20px 48px; }
+  .case-hero-top { grid-template-columns: 1fr; gap: 32px; }
+  .case-meta { justify-content: flex-start; }
+  .case-body { grid-template-columns: 1fr; }
+  .case-sidebar { display: none; }
+  .case-content { padding: 32px 20px 64px; }
+  .section-layout { grid-template-columns: 1fr; gap: 16px; }
+  .section-heading { position: static; }
+  .cards-grid { grid-template-columns: 1fr; }
+  .overview-table { grid-template-columns: 1fr; }
+  .overview-cell:nth-child(odd) { border-right: none; }
+  footer { padding: 24px 20px; flex-direction: column; gap: 14px; text-align: center; }
+  .footer-links { flex-wrap: wrap; justify-content: center; }
+}
+</style>
+</head>
+<body>
+
+<div id="blob"></div>
+
+<nav>
+  <ul class="nav-left">
+    <li><a href="index.html" data-text="Home">Home</a></li>
+    <li><a href="projects.html" data-text="Work" class="active">Work</a></li>
+  </ul>
+  <span class="nav-name">Mansimar Wadhera</span>
+  <ul class="nav-right">
+    <li><a href="other.html" data-text="Other">Other</a></li>
+    <li><a href="REPLACE_WITH_GOOGLE_DRIVE_LINK" target="_blank" data-text="Resume">Resume</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="case-hero">
+  <div class="case-hero-top">
+    <h1 class="case-title">GOOGLE<br>DEVELOPER<br>GROUP<br>VANCOUVER</h1>
+    <div class="case-meta">
+      <div class="meta-item">
+        <span class="meta-label">Team</span>
+        <span class="meta-value">4 Members</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">My Role</span>
+        <span class="meta-value">UX Research, Interaction Design, Prototyping</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Tools</span>
+        <span class="meta-value">Figma, FigJam, Google Workspace</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Duration</span>
+        <span class="meta-value">Spring 2024</span>
+      </div>
+    </div>
+  </div>
+  <p class="case-intro">An ethnography-driven product design process to unify volunteer coordination and attendee navigation into a dual dashboard system.</p>
+  <div class="case-cover">
+    <video src="gdg.mov" autoplay loop muted playsinline></video>
+  </div>
+</section>
+
+<!-- BODY -->
+<div class="case-body">
+
+  <!-- SIDEBAR -->
+  <aside class="case-sidebar">
+    <ul class="sidebar-nav">
+      <li><a href="#overview" class="active">Project Overview</a></li>
+      <li><a href="#client">The Client</a></li>
+      <li><a href="#problem">Problem Statement</a></li>
+      <li><a href="#research">Research Methodology</a></li>
+      <li><a href="#findings">Key Findings</a></li>
+      <li><a href="#personas">User Personas</a></li>
+      <li><a href="#journey">Journey Mapping</a></li>
+      <li><a href="#iterations">Design Iterations</a></li>
+      <li><a href="#solution">Design Solution</a></li>
+      <li><a href="#wireframes">Wireframes</a></li>
+      <li><a href="#prototype">Prototype</a></li>
+      <li><a href="#reflection">My Reflection</a></li>
+    </ul>
+  </aside>
+
+  <!-- CONTENT -->
+  <main class="case-content">
+
+    <!-- OVERVIEW -->
+    <section class="case-section" id="overview">
+      <div class="section-layout">
+        <h2 class="section-heading">Project Overview</h2>
+        <div class="section-body">
+          <p><strong>Designing the end to end event experience.</strong></p>
+          <p>An ethnography-driven product design process to unify volunteer coordination and attendee navigation into a dual dashboard system, transforming a fragmented event experience into a seamless and scalable platform.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CLIENT -->
+    <section class="case-section" id="client">
+      <div class="section-layout">
+        <h2 class="section-heading">The Client</h2>
+        <div class="section-body">
+          <p><strong>Google Developer Group (GDG) Vancouver</strong> is an officially recognized, Google-supported community of developers and tech enthusiasts in the Vancouver area. The group hosts various events including meetups, workshops, technology learning sessions and professional networking events.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROBLEM -->
+    <section class="case-section" id="problem">
+      <div class="section-layout">
+        <h2 class="section-heading">Problem Statement</h2>
+        <div class="section-body">
+          <p>How might we design a unified digital experience that makes event organization seamless by reducing challenges for volunteers and attendees while creating a more personalized, informed and memorable journey?</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- RESEARCH -->
+    <section class="case-section" id="research">
+      <div class="section-layout">
+        <h2 class="section-heading">Research Methodology</h2>
+        <div class="section-body">
+          <div class="method-grid">
+            <div class="method-card">
+              <span class="method-num">01</span>
+              <h4>Participation and Observation</h4>
+              <p>Attended GDG Vancouver's "Intro to Gen AI" workshop as a participant observer. Field notes documented volunteer and attendee behaviours.</p>
+            </div>
+            <div class="method-card">
+              <span class="method-num">02</span>
+              <h4>Semi Structured Interviews</h4>
+              <p>Conducted Google Meet sessions with the Lead Organizer to gain insights into the organization's operations and challenges.</p>
+            </div>
+            <div class="method-card">
+              <span class="method-num">03</span>
+              <h4>Digital User Survey</h4>
+              <p>Open-ended digital questionnaire distributed across volunteers, attendees and organizers, capturing diverse pain point patterns.</p>
+            </div>
+            <div class="method-card">
+              <span class="method-num">04</span>
+              <h4>Participatory Design Workshop</h4>
+              <p>Organized a participatory design workshop with GDG Vancouver organizers and potential users to explore design opportunities.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FINDINGS -->
+    <section class="case-section" id="findings">
+      <div class="section-layout">
+        <h2 class="section-heading">Key Findings & Insights</h2>
+        <div class="section-body">
+          <div class="finding-grid">
+            <div class="finding-card">
+              <span class="finding-num">01</span>
+              <div class="finding-card-text">
+                <h4>Event Organization and Clarity</h4>
+                <p>Participants shared that event schedules and navigation can be unclear during in-person events. Important information is often difficult to access, making the overall experience feel overwhelming.</p>
+              </div>
+            </div>
+            <div class="finding-card">
+              <span class="finding-num">02</span>
+              <div class="finding-card-text">
+                <h4>Engagement and Interaction Enhancement</h4>
+                <p>Participants shared limited networking tools, fewer interaction opportunities and challenges in maintaining long-term engagement within the community.</p>
+              </div>
+            </div>
+            <div class="finding-card">
+              <span class="finding-num">03</span>
+              <div class="finding-card-text">
+                <h4>Social Media Platform Dependency Issues</h4>
+                <p>Participants noted the absence of a centralized platform for communication and resource sharing, resulting in scattered and disconnected interactions.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PERSONAS -->
+    <section class="case-section" id="personas">
+      <div class="section-layout">
+        <h2 class="section-heading">User Personas</h2>
+        <div class="section-body">
+          <p>Two primary user personas were developed through research — a volunteer managing event operations and an attendee navigating the event experience.</p>
+        </div>
+      </div>
+      <div class="img-block-full" style="margin-top: 32px;">
+        <img src="gdg-volunteer-persona.png" alt="Volunteer Persona — Liam Shaw">
+      </div>
+      <p class="img-caption" style="margin-top: 10px;">Volunteer Persona — Liam Shaw</p>
+      <div class="img-block-full" style="margin-top: 32px;">
+        <img src="gdg-attendee-persona.png" alt="Attendee Persona — Fiona Goode">
+      </div>
+      <p class="img-caption" style="margin-top: 10px;">Attendee Persona — Fiona Goode</p>
+    </section>
+
+    <!-- JOURNEY -->
+    <section class="case-section" id="journey">
+      <div class="section-layout">
+        <h2 class="section-heading">Journey Mapping</h2>
+        <div class="section-body">
+          <p>Journey maps track the actions, emotions and pain points of each persona across the full event lifecycle — from pre-event setup through to post-event wrap-up.</p>
+        </div>
+      </div>
+      <div class="img-block-full" style="margin-top: 32px;">
+        <img src="gdg-volunteer-journeymap.png" alt="Volunteer Journey Map — Liam Shaw">
+      </div>
+      <p class="img-caption" style="margin-top: 10px;">Volunteer Journey Map — Liam Shaw</p>
+      <div class="img-block-full" style="margin-top: 32px;">
+        <img src="gdg-attendee-journeymap.png" alt="Attendee Journey Map — Fiona Goode">
+      </div>
+      <p class="img-caption" style="margin-top: 10px;">Attendee Journey Map — Fiona Goode</p>
+    </section>
+
+    <!-- ITERATIONS -->
+    <section class="case-section" id="iterations">
+      <div class="section-layout">
+        <h2 class="section-heading">Design Iterations</h2>
+        <div class="section-body">
+          <p>Three design concepts emerged from the participatory workshop and ideation sessions, each addressing a core pain point identified in research.</p>
+          <div class="cards-grid">
+            <div class="card">
+              <h4>The Magnet-Chain Board</h4>
+              <p>A visual task management board allowing volunteers to connect with each other and coordinate assignments in real time.</p>
+            </div>
+            <div class="card">
+              <h4>Name Badge Booklet</h4>
+              <p>A session takeaway booklet combining a QR-based name badge with key session summaries to help attendees retain and reconnect with content.</p>
+            </div>
+            <div class="card">
+              <h4>Dual Dashboard</h4>
+              <p>An ethnography-driven product design to unify volunteer coordination and attendee navigation into a dual dashboard system.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SOLUTION -->
+    <section class="case-section" id="solution">
+      <div class="section-layout">
+        <h2 class="section-heading">Design Solution</h2>
+        <div class="section-body">
+          <p><strong>The dual dashboard platform.</strong></p>
+          <p>An ethnography-driven product design process to unify volunteer coordination and attendee navigation into a dual dashboard system, transforming a fragmented event experience into a seamless and scalable platform.</p>
+          <div class="cards-grid">
+            <div class="card">
+              <h4>Volunteer Dashboard</h4>
+              <p>Centralizes task assignments, help requests, real-time updates and role management so volunteers can stay focused and connected throughout the event.</p>
+            </div>
+            <div class="card">
+              <h4>Attendee Dashboard</h4>
+              <p>Provides live event updates, customizable schedules, photo sharing, agenda access and maps — reducing logistical friction and helping attendees stay engaged.</p>
+            </div>
+          </div>
+          <div class="img-block">
+            <img src="gdg-cover.png" alt="Design Solution — upload your solution screens">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- WIREFRAMES -->
+    <section class="case-section" id="wireframes">
+      <div class="section-layout">
+        <h2 class="section-heading">Wireframes</h2>
+        <div class="section-body">
+          <p>Low-fidelity wireframes were developed for both the Volunteer and Attendee dashboards, covering key screens including the Home Page, Task Management, Help Request flow, Schedule view, and Media sharing.</p>
+          <div class="img-block">
+            <img src="gdg-cover.png" alt="Wireframes — upload your wireframe images">
+          </div>
+          <p class="img-caption">Volunteer Dashboard Wireframes</p>
+          <div class="img-block" style="margin-top: 24px;">
+            <img src="gdg-cover.png" alt="Attendee wireframes — upload your wireframe images">
+          </div>
+          <p class="img-caption">Attendee Dashboard Wireframes</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROTOTYPE -->
+    <section class="case-section" id="prototype">
+      <div class="section-layout">
+        <h2 class="section-heading">Prototype</h2>
+        <div class="section-body">
+          <p>The interactive prototype was built in Figma, covering the full volunteer and attendee flows. It was tested with GDG community members to validate usability and identify further improvements.</p>
+          <div class="card" style="margin-top: 8px;">
+            <h4>View Prototype</h4>
+            <p>Interactive Figma prototype available on request. <a href="#" style="color: var(--black); font-weight: 500;">Open in Figma →</a></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- REFLECTION -->
+    <section class="case-section" id="reflection">
+      <div class="section-layout">
+        <h2 class="section-heading">My Reflection</h2>
+        <div class="section-body">
+          <p>How might we design a unified digital experience that makes event organization seamless by reducing challenges for volunteers and attendees while creating a more personalized, informed and memorable journey?</p>
+          <p>This project taught me the value of deep ethnographic research before jumping into design solutions. By attending events and observing real user behaviours, our team was able to identify pain points that would not have surfaced through surveys alone. The dual dashboard approach emerged directly from these insights.</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer>
+  <span>© 2026 Mansimar Wadhera</span>
+  <div class="footer-links">
+    <a href="https://linkedin.com/in/mansimarwadhera10-bb5537276" target="_blank" data-text="LinkedIn ↗">LinkedIn ↗</a>
+    <a href="#" data-text="Instagram ↗">Instagram ↗</a>
+    <a href="mailto:mansimarwadhera1026@gmail.com" data-text="Email ↗">Email ↗</a>
+  </div>
+</footer>
+
+<button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+  <div class="theme-toggle-knob" id="toggleKnob">☀️</div>
+</button>
+
+<script>
+/* ── BLOB ── */
+const blob = document.getElementById('blob');
+let bx = -100, by = -100, mx = -100, my = -100;
+function lerp(a,b,t){ return a+(b-a)*t; }
+(function tick(){
+  bx = lerp(bx, mx, 0.13);
+  by = lerp(by, my, 0.13);
+  blob.style.left = bx + 'px';
+  blob.style.top  = by + 'px';
+  requestAnimationFrame(tick);
+})();
+document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+document.querySelectorAll('a, button').forEach(el => {
+  el.addEventListener('mouseenter', () => blob.classList.add('expanded'));
+  el.addEventListener('mouseleave', () => blob.classList.remove('expanded'));
+});
+document.addEventListener('mousedown', () => blob.classList.add('clicking'));
+document.addEventListener('mouseup',   () => blob.classList.remove('clicking'));
+
+/* ── THEME ── */
+const toggle = document.getElementById('themeToggle');
+const knob   = document.getElementById('toggleKnob');
+let dark = false;
+toggle.addEventListener('click', () => {
+  dark = !dark;
+  document.body.classList.toggle('dark', dark);
+  knob.textContent = dark ? '🌙' : '☀️';
+  localStorage.setItem('theme', dark ? 'dark' : 'light');
+});
+if (localStorage.getItem('theme') === 'dark') {
+  dark = true;
+  document.body.classList.add('dark');
+  knob.textContent = '🌙';
+}
+toggle.addEventListener('mouseenter', () => blob.classList.add('expanded'));
+toggle.addEventListener('mouseleave', () => blob.classList.remove('expanded'));
+
+/* ── SIDEBAR ACTIVE ON SCROLL ── */
+const sections = document.querySelectorAll('.case-section');
+const sidebarLinks = document.querySelectorAll('.sidebar-nav a');
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      sidebarLinks.forEach(link => link.classList.remove('active'));
+      const id = entry.target.getAttribute('id');
+      const activeLink = document.querySelector(`.sidebar-nav a[href="#${id}"]`);
+      if (activeLink) activeLink.classList.add('active');
+    }
+  });
+}, { rootMargin: '-20% 0px -70% 0px' });
+
+sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>
