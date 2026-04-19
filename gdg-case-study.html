@@ -307,45 +307,26 @@ nav {
 }
 
 /* ── FINDING CARDS ── */
-.finding-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-  margin-top: 8px;
-}
+.finding-grid { display: flex; flex-direction: column; gap: 0; margin-top: 8px; }
+.finding-card { padding: 20px 0; border-bottom: 1px solid var(--beige); display: grid; grid-template-columns: 32px 1fr; gap: 12px; align-items: start; }
+.finding-card:last-child { border-bottom: none; padding-bottom: 0; }
+.finding-num { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; color: var(--grey-mid); padding-top: 3px; }
+.finding-card-text h4 { font-size: 15px; font-weight: 500; color: var(--black); line-height: 1.3; margin-bottom: 8px; }
+.finding-card-text p { font-size: 13px; line-height: 1.7; color: var(--grey-text); }
 
-.finding-card {
-  display: grid;
-  grid-template-columns: 1fr;
-  padding: 24px 0 24px 20px;
-  border-left: 2px solid var(--beige);
-  margin-bottom: 16px;
-  transition: border-color 0.2s;
-}
+/* ── FOUR COL IMAGES ── */
+.four-col-imgs { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 8px; margin-bottom: 24px; }
+.four-col-imgs img { width: 100%; aspect-ratio: 1/1; object-fit: cover; display: block; border-radius: 4px; }
 
-.finding-card:hover { border-left-color: var(--black); }
-.finding-card:last-child { margin-bottom: 0; }
-
-.finding-num {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  color: var(--grey-mid);
-  margin-bottom: 8px;
-}
-
-.finding-card-text h4 {
-  font-size: 15px;
-  font-weight: 500;
-  color: var(--black);
-  margin-bottom: 8px;
-}
-
-.finding-card-text p {
-  font-size: 13px;
-  line-height: 1.7;
-  color: var(--grey-text);
-}
+/* ── GDG PHASE CARDS ── */
+.gdg-phase-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.gdg-phase-card { border: 1px solid var(--beige); border-radius: 8px; padding: 24px; transition: border-color 0.2s; }
+.gdg-phase-card:hover { border-color: var(--black); }
+.gdg-phase-label { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; color: var(--grey-mid); margin-bottom: 16px; text-transform: uppercase; }
+.gdg-phase-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0; }
+.gdg-phase-list li { display: flex; gap: 14px; align-items: baseline; padding: 10px 0; border-bottom: 1px solid var(--beige); font-size: 13px; color: var(--grey-text); line-height: 1.5; }
+.gdg-phase-list li:last-child { border-bottom: none; padding-bottom: 0; }
+.gdg-phase-num { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; color: var(--grey-mid); flex-shrink: 0; }
 
 /* ── CARDS GRID ── */
 .cards-grid {
@@ -647,7 +628,7 @@ footer a:hover::after { transform: translateY(-100%); }
       </div>
       <div class="meta-item">
         <span class="meta-label">Duration</span>
-        <span class="meta-value">Spring 2024</span>
+        <span class="meta-value">Spring 2025 (10 weeks)</span>
       </div>
     </div>
   </div>
@@ -667,7 +648,7 @@ footer a:hover::after { transform: translateY(-100%); }
       <li><a href="#client">The Client</a></li>
       <li><a href="#problem">Problem Statement</a></li>
       <li><a href="#research">Research Methodology</a></li>
-      <li><a href="#findings">Key Findings</a></li>
+      <li><a href="#findings">Key Findings & Insights</a></li>
       <li><a href="#personas">User Personas</a></li>
       <li><a href="#journey">Journey Mapping</a></li>
       <li><a href="#iterations">Design Iterations</a></li>
@@ -821,7 +802,7 @@ footer a:hover::after { transform: translateY(-100%); }
       </div>
       <div class="three-col-imgs" style="margin-top: 32px;">
         <div class="three-col-img-item">
-          <img src="gdg-magnetchainboard-concept.png" alt="The Magnet-Chain Board">
+          <img src="gdg-magnetchainboard concept.png" alt="The Magnet-Chain Board">
           <div class="iteration-info">
             <h4>The Magnet-Chain Board</h4>
             <p>A visual task management board allowing volunteers to connect with each other and coordinate assignments in real time.</p>
@@ -855,27 +836,29 @@ footer a:hover::after { transform: translateY(-100%); }
       <div class="two-col-imgs" style="margin-top: 32px;">
         <div class="two-col-img-item">
           <img src="gdg-volunteerdashboard.png" alt="Volunteer Dashboard">
-          <div class="feature-list">
-            <p class="feature-title">Volunteer Dashboard Features</p>
-            <ol>
-              <li data-num="01">Adding and Checking Tasks</li>
-              <li data-num="02">Requesting Help</li>
-              <li data-num="03">Live Updates and Notifications</li>
-              <li data-num="04">View Team Status and Chat System</li>
-            </ol>
-          </div>
         </div>
         <div class="two-col-img-item">
           <img src="gdg-attendeedashboard.png" alt="Attendee Dashboard">
-          <div class="feature-list">
-            <p class="feature-title">Attendee Dashboard Features</p>
-            <ol>
-              <li data-num="01">Building, Adding and Managing Agenda / Building Schedule</li>
-              <li data-num="02">Live Updates and Notifications</li>
-              <li data-num="03">Viewing Key Takeaways</li>
-              <li data-num="04">Viewing Photo Album</li>
-            </ol>
-          </div>
+        </div>
+      </div>
+      <div class="gdg-phase-grid" style="margin-top: 24px;">
+        <div class="gdg-phase-card">
+          <div class="gdg-phase-label">Volunteer Dashboard</div>
+          <ol class="gdg-phase-list">
+            <li><span class="gdg-phase-num">01</span><span>Adding and checking tasks.</span></li>
+            <li><span class="gdg-phase-num">02</span><span>Requesting help.</span></li>
+            <li><span class="gdg-phase-num">03</span><span>Live updates and notifications.</span></li>
+            <li><span class="gdg-phase-num">04</span><span>View team status and chat system.</span></li>
+          </ol>
+        </div>
+        <div class="gdg-phase-card">
+          <div class="gdg-phase-label">Attendee Dashboard</div>
+          <ol class="gdg-phase-list">
+            <li><span class="gdg-phase-num">01</span><span>Building, adding and managing agenda.</span></li>
+            <li><span class="gdg-phase-num">02</span><span>Live updates and notifications.</span></li>
+            <li><span class="gdg-phase-num">03</span><span>Viewing key takeaways.</span></li>
+            <li><span class="gdg-phase-num">04</span><span>Viewing photo album.</span></li>
+          </ol>
         </div>
       </div>
     </section>
@@ -921,9 +904,18 @@ footer a:hover::after { transform: translateY(-100%); }
       <div class="section-layout">
         <h2 class="section-heading">My Reflection</h2>
         <div class="section-body">
-          <p>This project taught me the value of deep ethnographic research before jumping into design solutions. By attending events and observing real user behaviours, our team was able to identify pain points that would not have surfaced through surveys alone. The dual dashboard approach emerged directly from these insights.</p>
+          <p>This project taught me the value of deep ethnographic research before moving into design solutions. By attending events, we uncovered insights that wouldn't have emerged through surveys alone, which directly informed our design decisions.</p>
+          <p>It was also my first experience working with a real client, which pushed me to think more practically. We had to balance our ideas with real-world constraints and make decisions through ongoing discussions and feedback.</p>
+          <p>One key takeaway was understanding that not every interesting idea is viable. Some concepts didn't provide enough value due to scalability and cost considerations. Overall, I learned to approach design in a more realistic and thoughtful way.</p>
         </div>
       </div>
+      <div class="four-col-imgs" style="margin-top: 32px;">
+        <img src="gdg-workshop1.png" alt="Participatory Design Workshop">
+        <img src="gdg-workshop2.png" alt="Participatory Design Workshop">
+        <img src="gdg-workshop3.png" alt="Participatory Design Workshop">
+        <img src="gdg-workshop4.png" alt="Participatory Design Workshop">
+      </div>
+      <p class="img-caption" style="margin-top: 10px;">2 hours Participatory Design Workshop</p>
     </section>
 
   </main>
