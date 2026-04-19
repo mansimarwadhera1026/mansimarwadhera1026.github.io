@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mansimar Wadhera — Product Designer</title>
+<title>Mansimar Wadhera</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%230E0E0D' rx='4'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='700' font-size='11'>MW</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
 <style>
@@ -388,7 +389,9 @@ body.dark .theme-toggle-knob { transform: translateX(22px); }
 .about-entry-date { font-size: 13px; color: var(--grey-mid); white-space: nowrap; flex-shrink: 0; }
 
 .about-gdg-photos { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; width: 100%; }
-.about-gdg-photos img { width: 100%; aspect-ratio: 1/1; object-fit: cover; display: block; border-radius: 4px; background: var(--grey-light); }
+.gdg-photo-item { display: flex; flex-direction: column; gap: 6px; }
+.gdg-photo-item img { width: 100%; aspect-ratio: 1/1; object-fit: cover; display: block; border-radius: 4px; background: var(--grey-light); }
+.gdg-photo-caption { font-size: 11px; color: var(--grey-mid); line-height: 1.4; }
 
 /* ── FOOTER ── */
 footer {
@@ -567,9 +570,18 @@ footer a:hover::after { transform: translateY(-100%); }
           <p class="about-entry-date">2024 - Present</p>
         </div>
         <div class="about-gdg-photos">
-          <img src="gdgvancouver1.png" alt="GDG Vancouver">
-          <img src="gdgvancouver2.png" alt="GDG Vancouver">
-          <img src="gdgvancouver3.png" alt="GDG Vancouver">
+          <div class="gdg-photo-item">
+            <img src="gdgvancouver1.png" alt="GDG Vancouver Devfest November 2025">
+            <p class="gdg-photo-caption">GDG Vancouver Devfest November 2025</p>
+          </div>
+          <div class="gdg-photo-item">
+            <img src="gdgvancouver2.png" alt="GDG Vancouver x GDSC UBC">
+            <p class="gdg-photo-caption">GDG Vancouver x GDSC UBC</p>
+          </div>
+          <div class="gdg-photo-item">
+            <img src="gdgvancouver3.png" alt="AI Summit November 2024">
+            <p class="gdg-photo-caption">AI Summit November 2024</p>
+          </div>
         </div>
       </div>
     </div>
