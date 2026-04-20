@@ -87,6 +87,8 @@ nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; display: grid; g
 .interaction-info p { font-size: 13px; line-height: 1.7; color: var(--grey-text); }
 .two-col-imgs { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 .two-col-img-item img { width: 100%; display: block; border-radius: 4px; }
+.three-col-imgs { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+.three-col-imgs img { width: 100%; display: block; border-radius: 4px; }
 .img-caption { font-size: 12px; color: var(--grey-mid); text-align: center; padding: 10px 0 0; }
 body.dark { --black: #F0EFEC; --white: #0E0E0D; --grey-light: #1C1C1A; --grey-mid: #3A3A38; --grey-text: #D4D2CD; --beige: #3A3A38; }
 body.dark nav { background: rgba(14,14,13,0.92); }
@@ -255,15 +257,23 @@ footer a:hover::after { transform: translateY(-100%); }
       <div class="section-layout">
         <h2 class="section-heading">Design System</h2>
         <div class="section-body">
-          <p><strong>Typography.</strong> Staff XX Condensed is used for titles to command attention, referencing the condensed text seen on film posters. Neue Montreal is used for calls to action for its clean functionality. Neue Montreal Mono is used for body content to evoke a narrative, script-like effect.</p>
-          <p><strong>Imagery.</strong> Full-bleed, clear film imagery creates emotional impact and highlights the lineup. Reduced opacity imagery is layered under text to provoke interest.</p>
-          <p><strong>Colour.</strong> Colour differentiates content categories - bright colour-coding applied to film genre sections and ticketing creates clear visual cues that would also translate to physical event assets and wayfinding.</p>
+          <p>Typography, imagery and colour guide both emotion and navigation. Typography sets tone and directs attention. Full-bleed film imagery creates strong visual impact, while layered, reduced-opacity images add depth. Colour is used to differentiate categories, creating clear visual cues across the experience.</p>
         </div>
       </div>
-      <div class="img-block-full" style="margin-top: 32px;">
-        <img src="swissfilms-designsystem.png" alt="SwissFilms Design System">
+      <div class="three-col-imgs" style="margin-top: 32px;">
+        <div>
+          <img src="swissfilms-typography.png" alt="Navigation Through Typography">
+          <p class="img-caption" style="margin-top: 10px;">Navigation Through Typography</p>
+        </div>
+        <div>
+          <img src="swissfilms-image.png" alt="Connection Through Imagery">
+          <p class="img-caption" style="margin-top: 10px;">Connection Through Imagery</p>
+        </div>
+        <div>
+          <img src="swissfilms-colour.png" alt="Colour as Category">
+          <p class="img-caption" style="margin-top: 10px;">Colour as Category</p>
+        </div>
       </div>
-      <p class="img-caption" style="margin-top: 10px;">SwissFilms 2025 Design System</p>
     </section>
 
     <section class="case-section" id="process">
