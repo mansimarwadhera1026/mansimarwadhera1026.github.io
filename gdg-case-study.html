@@ -602,11 +602,11 @@ footer a:hover::after { transform: translateY(-100%); }
 <nav>
   <ul class="nav-left">
     <li><a href="index.html" data-text="Home">Home</a></li>
-    <li><a href="projects.html" data-text="Work" class="active">Work</a></li>
+    <li><a href="projects.html" data-text="Projects" class="active">Projects</a></li>
   </ul>
   <span class="nav-name">Mansimar Wadhera</span>
   <ul class="nav-right">
-    <li><a href="other.html" data-text="Other">Other</a></li>
+    <li><a href="about.html" data-text="About">About</a></li>
     <li><a href="https://drive.google.com/file/d/1OgZ7c7rQkM-nxJpgHR6_hVmVmUF7kkvw/view?usp=sharing" target="_blank" data-text="Resume">Resume</a></li>
   </ul>
 </nav>
@@ -630,7 +630,7 @@ footer a:hover::after { transform: translateY(-100%); }
       </div>
       <div class="meta-item">
         <span class="meta-label">Duration</span>
-        <span class="meta-value">Spring 2025 (10 weeks)</span>
+        <span class="meta-value">Spring 2025 (9 weeks)</span>
       </div>
     </div>
   </div>
@@ -651,12 +651,14 @@ footer a:hover::after { transform: translateY(-100%); }
       <li><a href="#problem">Problem Statement</a></li>
       <li><a href="#research">Research Methodology</a></li>
       <li><a href="#findings">Key Findings & Insights</a></li>
-      <li><a href="#personas">User Personas</a></li>
-      <li><a href="#journey">Journey Mapping</a></li>
-      <li><a href="#iterations">Design Iterations</a></li>
+      <li><a href="#designprocess">Design Process</a></li>
+      <li><a href="#personas">&nbsp;&nbsp;User Personas</a></li>
+      <li><a href="#journey">&nbsp;&nbsp;Journey Mapping</a></li>
+      <li><a href="#iterations">&nbsp;&nbsp;Design Iterations</a></li>
       <li><a href="#solution">Design Solution</a></li>
-      <li><a href="#wireframes">Wireframes</a></li>
-      <li><a href="#prototype">Prototype</a></li>
+      <li><a href="#wireframes">&nbsp;&nbsp;Wireframes</a></li>
+      <li><a href="#usabilitytesting">&nbsp;&nbsp;Usability Testing</a></li>
+      <li><a href="#prototype">&nbsp;&nbsp;Prototype</a></li>
       <li><a href="#reflection">My Reflection</a></li>
     </ul>
   </aside>
@@ -754,6 +756,16 @@ footer a:hover::after { transform: translateY(-100%); }
               </div>
             </div>
           </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DESIGN PROCESS -->
+    <section class="case-section" id="designprocess">
+      <div class="section-layout">
+        <h2 class="section-heading">Design Process</h2>
+        <div class="section-body">
+          <p>After conducting ethnographic research at GDG Vancouver events, we turned our findings into user personas and journey maps to better understand the needs and pain points of volunteers and attendees. We explored multiple design ideas through brainstorming and collaborative discussions, then tested our early wireframes and prototype drafts in a 2-hour stakeholder workshop. The feedback helped us refine and iterate the final dual-dashboard solution.</p>
         </div>
       </div>
     </section>
@@ -883,6 +895,34 @@ footer a:hover::after { transform: translateY(-100%); }
       <p class="img-caption" style="margin-top: 10px;">Attendee Dashboard Wireframes</p>
     </section>
 
+    <!-- USABILITY TESTING -->
+    <section class="case-section" id="usabilitytesting">
+      <div class="section-layout">
+        <h2 class="section-heading">Usability Testing</h2>
+        <div class="section-body">
+          <p>Our team conducted a 2-hour participatory design workshop with one volunteer, one organizer and three potential users to validate our early concepts and gather feedback. Through scenario-based activities, participants explored common event challenges related to communication, scheduling, coordination and engagement, while also interacting with our early wireframes and prototype mockups. The workshop helped us evaluate usability, understand user expectations and refine the final dual-dashboard solution based on real stakeholder feedback.</p>
+        </div>
+      </div>
+      <div style="margin-top: 32px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+        <div>
+          <img src="gdg-sw1.png" alt="Activity 1" style="width:100%;aspect-ratio:4/3;object-fit:cover;display:block;border-radius:4px;">
+          <p class="img-caption" style="margin-top: 8px; text-align: center;">Activity 1: Imagine and Ideate</p>
+        </div>
+        <div>
+          <img src="gdg-sw2.png" alt="Activity 2" style="width:100%;aspect-ratio:4/3;object-fit:cover;display:block;border-radius:4px;">
+          <p class="img-caption" style="margin-top: 8px; text-align: center;">Activity 2: Try and Evaluate</p>
+        </div>
+        <div>
+          <img src="gdg-workshop2.png" alt="Participatory Workshop" style="width:100%;aspect-ratio:4/3;object-fit:cover;display:block;border-radius:4px;">
+          <p class="img-caption" style="margin-top: 8px; text-align: center;">Participatory Workshop Notes and Analysis</p>
+        </div>
+        <div>
+          <img src="gdg-workshop4.png" alt="Participatory Workshop Notes" style="width:100%;aspect-ratio:4/3;object-fit:cover;display:block;border-radius:4px;">
+          <p class="img-caption" style="margin-top: 8px; text-align: center;">Participatory Workshop Notes and Analysis</p>
+        </div>
+      </div>
+    </section>
+
     <!-- PROTOTYPE -->
     <section class="case-section" id="prototype">
       <div class="section-layout">
@@ -913,29 +953,45 @@ footer a:hover::after { transform: translateY(-100%); }
           <p>One key takeaway was understanding that not every interesting idea is viable. Some concepts didn't provide enough value due to scalability and cost considerations. Overall, I learned to approach design in a more realistic and thoughtful way.</p>
         </div>
       </div>
-      <div class="four-col-imgs" style="margin-top: 32px;">
-        <img src="gdg-workshop1.png" alt="Participatory Design Workshop">
-        <img src="gdg-workshop2.png" alt="Participatory Design Workshop">
-        <img src="gdg-workshop3.png" alt="Participatory Design Workshop">
-        <img src="gdg-workshop4.png" alt="Participatory Design Workshop">
+      <div style="margin-top: 32px;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <img src="gdg-workshop1.png" alt="Stakeholder Participatory Workshop" style="width:100%;aspect-ratio:4/3;object-fit:cover;display:block;border-radius:4px;">
+          <img src="gdg-workshop3.png" alt="Stakeholder Participatory Workshop" style="width:100%;aspect-ratio:4/3;object-fit:cover;display:block;border-radius:4px;">
+        </div>
+        <p class="img-caption" style="margin-top: 10px; text-align: center;">Stakeholder Participatory Workshop</p>
       </div>
     </section>
 
   </main>
 </div>
 
+<div style="height:1px;background:var(--beige);display:block;width:100%;"></div>
+
+<section style="padding:80px 48px;min-height:380px;display:flex;flex-direction:column;justify-content:space-between;">
+  <h2 style="font-size:clamp(48px,6.5vw,96px);font-weight:700;letter-spacing:-0.04em;line-height:0.92;color:var(--black);align-self:flex-start;">INTERESTED IN<br>WORKING TOGETHER?</h2>
+  <div style="display:flex;flex-direction:column;gap:20px;align-self:flex-end;margin-top:60px;">
+    <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-start;">
+      <span style="font-size:13px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--grey-mid);">Email</span>
+      <a href="mailto:mansimar_wadhera@sfu.ca" class="cta-link-value" data-text="mansimar_wadhera@sfu.ca" style="font-size:20px;font-weight:400;color:transparent;text-decoration:none;position:relative;display:inline-block;overflow:hidden;padding-bottom:2px;">mansimar_wadhera@sfu.ca</a>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-start;">
+      <span style="font-size:13px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--grey-mid);">LinkedIn</span>
+      <a href="https://linkedin.com/in/mansimarwadhera10-bb5537276" target="_blank" class="cta-link-value" data-text="Mansimar Wadhera" style="font-size:20px;font-weight:400;color:transparent;text-decoration:none;position:relative;display:inline-block;overflow:hidden;padding-bottom:2px;">Mansimar Wadhera</a>
+    </div>
+  </div>
+</section>
+
+<style>
+.cta-link-value::before { content: attr(data-text); position: absolute; top: 0; left: 0; color: var(--black); transition: transform 0.3s cubic-bezier(.22,1,.36,1); }
+.cta-link-value::after { content: attr(data-text); position: absolute; top: 100%; left: 0; color: var(--black); transition: transform 0.3s cubic-bezier(.22,1,.36,1); text-decoration: underline; text-underline-offset: 4px; }
+.cta-link-value:hover::before { transform: translateY(-100%); }
+.cta-link-value:hover::after { transform: translateY(-100%); }
+</style>
+
 <footer>
   <span>© 2026 Mansimar Wadhera</span>
-  <div class="footer-links">
-    <a href="https://linkedin.com/in/mansimarwadhera10-bb5537276" target="_blank" data-text="LinkedIn ↗">LinkedIn ↗</a>
-    <a href="https://www.instagram.com/mansimarwadhera10?igsh=MTVoYnRvdGt1MTUzMg%3D%3D&utm_source=qr" target="_blank" data-text="Instagram ↗">Instagram ↗</a>
-    <a href="mailto:mansimar_wadhera@sfu.ca" data-text="Email ↗">Email ↗</a>
-  </div>
+  <span>Updated May 10, 2026</span>
 </footer>
-
-<button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
-  <div class="theme-toggle-knob" id="toggleKnob">☀️</div>
-</button>
 
 <script>
 /* ── BLOB ── */
@@ -957,23 +1013,6 @@ document.querySelectorAll('a, button').forEach(el => {
 document.addEventListener('mousedown', () => blob.classList.add('clicking'));
 document.addEventListener('mouseup',   () => blob.classList.remove('clicking'));
 
-/* ── THEME ── */
-const toggle = document.getElementById('themeToggle');
-const knob   = document.getElementById('toggleKnob');
-let dark = false;
-toggle.addEventListener('click', () => {
-  dark = !dark;
-  document.body.classList.toggle('dark', dark);
-  knob.textContent = dark ? '🌙' : '☀️';
-  localStorage.setItem('theme', dark ? 'dark' : 'light');
-});
-if (localStorage.getItem('theme') === 'dark') {
-  dark = true;
-  document.body.classList.add('dark');
-  knob.textContent = '🌙';
-}
-toggle.addEventListener('mouseenter', () => blob.classList.add('expanded'));
-toggle.addEventListener('mouseleave', () => blob.classList.remove('expanded'));
 
 /* ── SIDEBAR ACTIVE ON SCROLL ── */
 const sections = document.querySelectorAll('.case-section');
