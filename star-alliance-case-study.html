@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mansimar Wadhera</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='12' fill='none' stroke='%230E0E0D' stroke-width='2.5'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --black: #0E0E0D;
+  --white: #FFFFFF;
+  --grey-light: #EFEFED;
+  --grey-mid:  #BFBDB8;
+  --grey-text: #4A4845;
+  --beige:     #E8E5DF;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--white);
+  color: var(--black);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  cursor: none;
+}
+
+#blob {
+  position: fixed; top: 0; left: 0;
+  width: 32px; height: 32px; border-radius: 50%;
+  background: transparent; border: 1.5px solid var(--black);
+  pointer-events: none; z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: width .45s cubic-bezier(.22,1,.36,1), height .45s cubic-bezier(.22,1,.36,1);
+}
+#blob.expanded { width: 56px; height: 56px; }
+#blob.clicking { width: 24px; height: 24px; transition-duration: .12s; }
+
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  display: grid; grid-template-columns: 1fr auto 1fr;
+  align-items: center; padding: 0 48px; height: 68px;
+  background: rgba(255,255,255,0.92); backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--beige);
+}
+.nav-left { display: flex; gap: 48px; list-style: none; justify-self: start; }
+.nav-name { font-size: 18px; font-weight: 700; color: var(--black); letter-spacing: 0.08em; text-transform: uppercase; justify-self: center; }
+.nav-right { display: flex; gap: 48px; list-style: none; justify-self: end; }
+.nav-left a, .nav-right a {
+  font-size: 13px; font-weight: 400; color: transparent;
+  text-decoration: none; text-transform: uppercase; letter-spacing: 0.08em;
+  position: relative; display: inline-block; overflow: hidden; padding-bottom: 4px;
+}
+.nav-left a::before, .nav-right a::before { content: attr(data-text); position: absolute; top: 0; left: 0; color: var(--black); transition: transform 0.3s cubic-bezier(.22,1,.36,1); }
+.nav-left a::after, .nav-right a::after { content: attr(data-text); position: absolute; top: 100%; left: 0; color: var(--black); transition: transform 0.3s cubic-bezier(.22,1,.36,1); }
+.nav-left a:not(.active):hover::before, .nav-right a:not(.active):hover::before { transform: translateY(-100%); }
+.nav-left a:not(.active):hover::after, .nav-right a:not(.active):hover::after { transform: translateY(-100%); }
+.nav-left a.active, .nav-right a.active { font-weight: 700; overflow: hidden; box-shadow: 0 1.5px 0 0 var(--black); }
+.nav-left a.active::before, .nav-right a.active::before { font-weight: 700; }
+
+/* ── HERO ── */
+.case-hero { padding: 140px 48px 64px; border-bottom: 1px solid var(--beige); }
+.case-hero-top { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; margin-bottom: 32px; }
+.case-title { font-size: clamp(52px, 7vw, 96px); font-weight: 700; letter-spacing: -0.04em; line-height: 0.88; color: var(--black); }
+.case-intro { font-size: 15px; line-height: 1.7; color: var(--grey-text); margin-bottom: 32px; }
+.case-meta { display: flex; flex-direction: column; margin-top: 8px; }
+.meta-item { display: flex; justify-content: space-between; align-items: baseline; padding: 18px 0; border-bottom: 1px solid var(--beige); gap: 24px; }
+.meta-label { font-size: 13px; font-weight: 400; color: var(--grey-text); flex-shrink: 0; }
+.meta-value { font-size: 13px; font-weight: 400; color: var(--black); text-align: right; }
+.case-cover { width: 100%; aspect-ratio: 16/8; background: #E5E0F5; overflow: hidden; border-radius: 4px; position: relative; }
+.case-cover img, .case-cover video { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* ── LAYOUT ── */
+.case-body { display: grid; grid-template-columns: 220px 1fr; min-height: 100vh; }
+
+/* ── SIDEBAR ── */
+.case-sidebar { position: sticky; top: 68px; height: calc(100vh - 68px); overflow-y: auto; padding: 48px 32px; border-right: 1px solid var(--beige); }
+.sidebar-nav { display: flex; flex-direction: column; gap: 0; list-style: none; }
+.sidebar-nav a { font-size: 14px; font-weight: 300; color: var(--grey-text); text-decoration: none; padding: 10px 0; display: block; transition: color 0.2s; }
+.sidebar-nav a:hover { color: var(--black); }
+.sidebar-nav a.active { color: var(--black); font-weight: 500; }
+
+/* ── CONTENT ── */
+.case-content { padding: 64px 64px 96px; }
+.case-section { margin-bottom: 80px; padding-top: 16px; border-top: 1px solid var(--beige); scroll-margin-top: 88px; }
+.case-section:first-child { border-top: none; padding-top: 0; }
+.section-layout { display: grid; grid-template-columns: 200px 1fr; gap: 48px; align-items: start; }
+.section-heading { font-size: 13px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--black); padding-top: 4px; position: sticky; top: 88px; }
+.section-body { display: flex; flex-direction: column; gap: 20px; }
+.section-body p { font-size: 15px; line-height: 1.78; color: var(--grey-text); }
+.section-body p strong { color: var(--black); font-weight: 500; }
+
+/* ── INSIGHT GRID ── */
+.insight-grid { display: flex; flex-direction: column; gap: 0; margin-top: 8px; }
+.insight-card { padding: 24px 0; border-bottom: 1px solid var(--beige); }
+.insight-card:last-child { border-bottom: none; padding-bottom: 0; }
+.insight-header { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+.insight-stat {
+  font-size: 40px;
+  font-weight: 700;
+  color: var(--black);
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+.insight-content h4 {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--black);
+  line-height: 1.3;
+}
+.insight-desc {
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--grey-text);
+  margin-bottom: 12px;
+}
+.insight-quote {
+  font-size: 13px;
+  font-style: italic;
+  color: var(--grey-text);
+  border-left: 2px solid var(--beige);
+  padding-left: 12px;
+  line-height: 1.6;
+  border-radius: 0;
+}
+
+/* ── STAT BLOCK ── */
+.stat-block { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-top: 8px; }
+.stat-card { border: 1px solid var(--beige); border-radius: 8px; padding: 24px; transition: border-color 0.2s; }
+.stat-card:hover { border-color: var(--black); }
+.stat-num { font-size: 40px; font-weight: 700; color: var(--black); letter-spacing: -0.03em; line-height: 1; margin-bottom: 8px; }
+.stat-label { font-size: 13px; color: var(--grey-text); line-height: 1.5; }
+
+/* ── METHOD CARDS ── */
+.method-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 8px; }
+.method-card { padding: 28px 24px; border: 1px solid var(--beige); border-radius: 8px; display: flex; flex-direction: column; gap: 10px; transition: border-color 0.2s; }
+.method-card:hover { border-color: var(--black); }
+.method-num { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; color: var(--grey-mid); }
+.method-card h4 { font-size: 15px; font-weight: 500; color: var(--black); line-height: 1.3; }
+.method-card p { font-size: 13px; line-height: 1.65; color: var(--grey-text); }
+
+/* ── FINDING CARDS ── */
+.finding-grid { display: flex; flex-direction: column; gap: 12px; margin-top: 8px; }
+.finding-card { border: 1px solid var(--beige); border-radius: 8px; padding: 24px 28px; display: grid; grid-template-columns: 40px 1fr; gap: 16px; align-items: start; transition: border-color 0.2s; }
+.finding-card:hover { border-color: var(--black); }
+.finding-num { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; color: var(--grey-mid); padding-top: 3px; }
+.finding-card-text h4 { font-size: 15px; font-weight: 500; color: var(--black); margin-bottom: 8px; }
+.finding-card-text p { font-size: 13px; line-height: 1.65; color: var(--grey-text); }
+
+/* ── PHASE CARDS ── */
+.phase-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+.phase-card { border: 1px solid var(--beige); border-radius: 8px; padding: 24px; transition: border-color 0.2s; }
+.phase-card:hover { border-color: var(--black); }
+.phase-label { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; color: var(--grey-mid); margin-bottom: 8px; text-transform: uppercase; }
+.phase-card h4 { font-size: 15px; font-weight: 500; color: var(--black); margin-bottom: 16px; }
+.phase-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0; }
+.phase-list li { display: flex; gap: 14px; align-items: baseline; padding: 10px 0; border-bottom: 1px solid var(--beige); font-size: 13px; color: var(--grey-text); line-height: 1.5; }
+.phase-list li:last-child { border-bottom: none; padding-bottom: 0; }
+.phase-num { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; color: var(--grey-mid); flex-shrink: 0; }
+
+/* ── IMAGE BLOCKS ── */
+/* ── FOUR COL IMAGES ── */
+.four-col-imgs { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 8px; }
+.four-col-imgs img { width: 100%; aspect-ratio: 1/1; object-fit: cover; display: block; border-radius: 4px; }
+
+/* ── PRE-TRIP GRID ── */
+.pretrip-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.pretrip-cell { display: flex; flex-direction: column; }
+.pretrip-media { width: 100%; display: block; border-radius: 4px; object-fit: cover; }
+
+.img-block { width: 100%; border-radius: 4px; overflow: hidden; background: var(--grey-light); margin-top: 8px; }
+.img-block img, .img-block video { width: 100%; display: block; }
+.img-block-full { width: 100%; overflow: hidden; margin-top: 8px; }
+.img-block-full img, .img-block-full video { width: 100%; display: block; }
+.img-caption { font-size: 12px; color: var(--grey-mid); text-align: center; padding: 10px 0 0; }
+.two-col-imgs { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.two-col-img-item img, .two-col-img-item video { width: 100%; aspect-ratio: 16/10; object-fit: cover; display: block; border-radius: 4px; }
+
+/* ── DARK MODE ── */
+body.dark { --black: #F0EFEC; --white: #0E0E0D; --grey-light: #2A2A28; --grey-mid: #9B9895; --grey-text: #B8B5B0; --beige: #3D3D3B; }
+body.dark nav { background: rgba(14,14,13,0.92); }
+
+/* ── THEME TOGGLE ── */
+.theme-toggle { position: fixed; top: 80px; left: 32px; z-index: 300; width: 52px; height: 30px; border-radius: 100px; background: var(--grey-light); border: 1px solid var(--beige); cursor: none; padding: 4px; transition: background 0.4s ease, border-color 0.4s ease; display: flex; align-items: center; }
+.theme-toggle-knob { width: 22px; height: 22px; border-radius: 50%; background: var(--black); transition: transform 0.4s cubic-bezier(.22,1,.36,1); display: flex; align-items: center; justify-content: center; font-size: 11px; flex-shrink: 0; }
+body.dark .theme-toggle-knob { transform: translateX(22px); }
+
+/* ── FOOTER ── */
+footer { border-top: 1px solid var(--beige); padding: 32px 48px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: var(--grey-text); }
+footer a { color: transparent; text-decoration: none; position: relative; display: inline-block; overflow: hidden; padding-bottom: 3px; }
+footer a::before { content: attr(data-text); position: absolute; top: 0; left: 0; color: var(--grey-text); transition: transform 0.3s cubic-bezier(.22,1,.36,1); }
+footer a::after { content: attr(data-text); position: absolute; top: 100%; left: 0; color: var(--grey-text); transition: transform 0.3s cubic-bezier(.22,1,.36,1); }
+footer a:hover::before { transform: translateY(-100%); }
+footer a:hover::after { transform: translateY(-100%); }
+.footer-links { display: flex; gap: 28px; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 1024px) {
+  nav { padding: 0 32px; }
+  .case-hero { padding: 100px 32px 48px; }
+  .case-body { grid-template-columns: 180px 1fr; }
+  .case-content { padding: 48px 40px 80px; }
+  .section-layout { grid-template-columns: 160px 1fr; gap: 32px; }
+}
+@media (max-width: 768px) {
+  body { cursor: auto; }
+  #blob { display: none; }
+  nav { grid-template-columns: 1fr 1fr; padding: 0 20px; height: 56px; }
+  .nav-left { gap: 20px; } .nav-right { gap: 20px; } .nav-name { display: none; }
+  .case-hero { padding: 90px 20px 48px; }
+  .case-hero-top { grid-template-columns: 1fr; gap: 32px; }
+  .case-body { grid-template-columns: 1fr; }
+  .case-sidebar { display: none; }
+  .case-content { padding: 32px 20px 64px; }
+  .section-layout { grid-template-columns: 1fr; gap: 16px; }
+  .section-heading { position: static; }
+  .method-grid, .phase-grid, .stat-block { grid-template-columns: 1fr; }
+  .two-col-imgs { grid-template-columns: 1fr; }
+  footer { padding: 24px 20px; flex-direction: column; gap: 14px; text-align: center; }
+  .footer-links { flex-wrap: wrap; justify-content: center; }
+}
+</style>
+</head>
+<body>
+
+<div id="blob"></div>
+
+<nav>
+  <ul class="nav-left">
+    <li><a href="index.html" data-text="Home">Home</a></li>
+    <li><a href="projects.html" data-text="Projects" class="active">Projects</a></li>
+  </ul>
+  <span class="nav-name">Mansimar Wadhera</span>
+  <ul class="nav-right">
+    <li><a href="about.html" data-text="About">About</a></li>
+    <li><a href="https://drive.google.com/file/d/1OgZ7c7rQkM-nxJpgHR6_hVmVmUF7kkvw/view?usp=sharing" target="_blank" data-text="Resume">Resume</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="case-hero">
+  <div class="case-hero-top">
+    <h1 class="case-title">STAR<br>ALLIANCE</h1>
+    <div class="case-meta">
+      <div class="meta-item">
+        <span class="meta-label">Team</span>
+        <span class="meta-value">5 Members</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">My Role</span>
+        <span class="meta-value">Visual Design, Interaction Design, Prototyping</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Tools</span>
+        <span class="meta-value">Figma, FigJam, Adobe After Effects</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Duration</span>
+        <span class="meta-value">Summer 2025 (6 weeks)</span>
+      </div>
+    </div>
+  </div>
+  <p class="case-intro">An all-in-one air travel solution by Star Alliance for new travellers to reduce stress and uncertainty at every step of the journey.</p>
+  <div class="case-cover">
+    <iframe src="https://www.youtube.com/embed/oZL94ah980w" title="Star Alliance Prototype Video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="width:100%;height:100%;position:absolute;top:0;left:0;"></iframe>
+  </div>
+</section>
+
+<!-- BODY -->
+<div class="case-body">
+
+  <!-- SIDEBAR -->
+  <aside class="case-sidebar">
+    <ul class="sidebar-nav">
+      <li><a href="#overview" class="active">Project Overview</a></li>
+      <li><a href="#client">The Client</a></li>
+      <li><a href="#problem">Problem Statement</a></li>
+      <li><a href="#research">Research Methodology</a></li>
+      <li><a href="#findings">Key Findings & Insights</a></li>
+      <li><a href="#process">Design Process</a></li>
+      <li><a href="#solution">Design Solution</a></li>
+      <li><a href="#pretrip">&nbsp;&nbsp;Pre-Trip</a></li>
+      <li><a href="#duringtrip">&nbsp;&nbsp;During-Trip</a></li>
+      <li><a href="#posttrip">&nbsp;&nbsp;Post-Trip</a></li>
+      <li><a href="#designsystem">Design System</a></li>
+      <li><a href="#reflection">My Reflection</a></li>
+    </ul>
+  </aside>
+
+  <!-- CONTENT -->
+  <main class="case-content">
+
+    <!-- OVERVIEW -->
+    <section class="case-section" id="overview">
+      <div class="section-layout">
+        <h2 class="section-heading">Project Overview</h2>
+        <div class="section-body">
+          <p><strong>A seamless air travel app for first-time flyers.</strong></p>
+          <p>A mobile application that transforms the Star Alliance platform into a seamless, end-to-end travel companion. It integrates flight booking, airport navigation, baggage tracking and post-trip reflection into one unified experience. It is designed to simplify air travel and make international journeys more accessible and less stressful for first-time and inexperienced travellers.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CLIENT -->
+    <section class="case-section" id="client">
+      <div class="section-layout">
+        <h2 class="section-heading">The Client</h2>
+        <div class="section-body">
+          <p><strong>Star Alliance</strong> is the world's largest airline alliance, founded in 1997 with a brand mission of enabling seamless world travel. The alliance connects <strong>26 member airlines</strong> across <strong>1,290 airports</strong> in <strong>195 countries</strong> - a network footprint no individual airline or third-party app can replicate.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROBLEM -->
+    <section class="case-section" id="problem">
+      <div class="section-layout">
+        <h2 class="section-heading">Problem Statement</h2>
+        <div class="section-body">
+          <p>How might we reduce the stress and uncertainty that prevents people from travelling by providing a seamless, guided, all-in-one air travel experience?</p>
+          <div class="stat-block">
+            <div class="stat-card">
+              <div class="stat-num">89%</div>
+              <div class="stat-label">of people find travel stressful - based on a 2018 global survey of over 1,400 participants.</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-num">76%</div>
+              <div class="stat-label">of travellers search for travel apps to reduce friction - based on the 2024 Hilton Travel Trends Report.</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-num">45%</div>
+              <div class="stat-label">of travellers are looking for all-in-one solutions to streamline travel planning - based on a 2024 TravelPerk analysis.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RESEARCH METHODOLOGY -->
+    <section class="case-section" id="research">
+      <div class="section-layout">
+        <h2 class="section-heading">Research Methodology</h2>
+        <div class="section-body">
+          <p>Research was conducted through surveys, interviews and desk research to understand the pain points of new and inexperienced travellers across the full travel journey.</p>
+          <div class="method-grid">
+            <div class="method-card">
+              <h4>Primary Survey</h4>
+              <p>Conducted a survey with 38 travellers who had flown within the past year to capture key pain points, stress triggers and overall travel experiences.</p>
+            </div>
+            <div class="method-card">
+              <h4>Secondary Research</h4>
+              <p>Synthesized insights from over 30 sources, including industry reports, large-scale airline reviews and global travel studies to identify patterns in traveller behaviour and stress factors.</p>
+            </div>
+            <div class="method-card">
+              <h4>Competitive Analysis</h4>
+              <p>Evaluated airline apps, third-party tools (e.g., FlightAware, TripIt), and online travel agencies to identify market gaps like the absence of a unified platform integrating flight tracking, baggage information, loyalty programs and destination guidance.</p>
+            </div>
+            <div class="method-card">
+              <h4>Industry & Academic Insights</h4>
+              <p>Reviewed academic and industry research on travel anxiety, airport stress and behavioural patterns to inform a deeper understanding of traveller psychology and decision-making.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- KEY FINDINGS AND INSIGHTS -->
+    <section class="case-section" id="findings">
+      <div class="section-layout">
+        <h2 class="section-heading">Key Findings & Insights</h2>
+        <div class="section-body">
+          <p>Four distinct stress categories emerged consistently across both secondary sources and primary survey responses, each pointing to a specific design requirement.</p>
+          <div class="insight-grid">
+            <div class="insight-card">
+              <div class="insight-header">
+                <span class="insight-stat">71%</span>
+                <div class="insight-content"><h4>Pre-trip preparation is the biggest stressor</h4></div>
+              </div>
+              <p class="insight-desc">The volume of research required - packing rules, documentation, itinerary planning, airline-specific policies - overwhelms new travellers before they even reach the airport. No single source consolidates this information.</p>
+              <p class="insight-quote">"I'm nervous about forgetting something important when heading somewhere new." — survey respondent</p>
+              <p class="insight-quote">Based on a 2024 survey of 2,409 Americans conducted by CivicScience.</p>
+            </div>
+            <div class="insight-card">
+              <div class="insight-header">
+                <span class="insight-stat">58%</span>
+                <div class="insight-content"><h4>Airport procedures create acute anxiety</h4></div>
+              </div>
+              <p class="insight-desc">Check-in queues, security, gate changes, and connecting flight navigation are the highest-stakes moments for inexperienced travellers. The physical environment is confusing and information is scattered across signage, apps and screens.</p>
+              <p class="insight-quote">"The most annoying part is missed connecting flights and subsequent inappropriate arrangements by the airline." — survey respondent</p>
+              <p class="insight-quote">Based on a 2024 survey of 2,409 Americans conducted by CivicScience.</p>
+            </div>
+            <div class="insight-card">
+              <div class="insight-header">
+                <span class="insight-stat">49%</span>
+                <div class="insight-content"><h4>Baggage rules are opaque and inconsistent</h4></div>
+              </div>
+              <p class="insight-desc">Allowances vary by airline, route and cabin class - making packing feel like guesswork. Travellers also feel helpless once bags are checked, with no visibility into where their luggage is.</p>
+              <p class="insight-quote">"Sometimes I can bring items and sometimes I can't — I literally won't know till I try." — survey respondent</p>
+              <p class="insight-quote">Based on a 2019 analysis of 15,000 reviews of 12 major airlines conducted by TNMT.</p>
+            </div>
+            <div class="insight-card">
+              <div class="insight-header">
+                <span class="insight-stat">38%</span>
+                <div class="insight-content"><h4>Flight irregularities are the most stressful part of air travel</h4></div>
+              </div>
+              <p class="insight-desc">Cancellations and delays leave travellers feeling powerless. Airline rebooking processes are confusing and slow, especially for those on multi-leg itineraries across different carriers where no single party takes ownership.</p>
+              <p class="insight-quote">Based on a 2019 analysis of 15,000 reviews of 12 major airlines conducted by TNMT.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROCESS -->
+    <section class="case-section" id="process">
+      <div class="section-layout">
+        <h2 class="section-heading">Design Process</h2>
+        <div class="section-body">
+          <p>With weekly group meetings and teaching team feedback sessions, three iterations refined the scope and focus of the solution throughout the project.</p>
+        </div>
+      </div>
+      <div class="two-col-imgs" style="margin-top: 32px;">
+        <div class="two-col-img-item">
+          <img src="staralliance-r4.png" alt="Online Feedback Session">
+          <p class="img-caption" style="margin-top: 8px;">Online Feedback Session</p>
+        </div>
+        <div class="two-col-img-item">
+          <img src="staralliance-r3.png" alt="Group Brainstorming Session">
+          <p class="img-caption" style="margin-top: 8px;">Group Brainstorming Session</p>
+        </div>
+      </div>
+      <div class="img-block-full" style="margin-top: 24px;">
+        <img src="staralliance-process.png" alt="Process">
+      </div>
+      <p class="img-caption" style="margin-top: 10px;">Design Process Overview</p>
+      <div class="two-col-imgs" style="margin-top: 12px;">
+        <div class="two-col-img-item">
+          <img src="staralliance-process1.png" alt="Process 1">
+          <p class="img-caption" style="margin-top: 8px;">First Iteration</p>
+        </div>
+        <div class="two-col-img-item">
+          <img src="staralliance-process2.png" alt="Process 2">
+          <p class="img-caption" style="margin-top: 8px;">Second Iteration</p>
+        </div>
+      </div>
+      <div class="img-block-full" style="margin-top: 12px;">
+        <img src="staralliance-final.png" alt="Final">
+      </div>
+      <p class="img-caption" style="margin-top: 10px;">Final Iteration of Star Alliance Mobile Application</p>
+    </section>
+
+    <!-- SOLUTION -->
+    <section class="case-section" id="solution">
+      <div class="section-layout">
+        <h2 class="section-heading">Design Solution</h2>
+        <div class="section-body">
+          <p><strong>One app. Every step of the journey.</strong></p>
+        </div>
+      </div>
+      <div class="img-block-full" style="margin-top: 32px;">
+        <img src="staralliance-designsolution.png" alt="Star Alliance Design Solution">
+      </div>
+      <p class="img-caption" style="margin-top: 10px; text-align: center;">End-to-end User Experience</p>
+      <div class="phase-grid" style="margin-top: 24px;">
+        <div class="phase-card">
+          <div class="phase-label">Pre-Trip</div>
+          <h4>Unified Preparation</h4>
+          <ol class="phase-list">
+            <li><span>Create an account.</span></li>
+            <li><span>Flight integration through dashboard access.</span></li>
+            <li><span>Preparation checklist.</span></li>
+            <li><span>Baggage guidance with AR measurement.</span></li>
+            <li><span>Destination itinerary suggestions.</span></li>
+          </ol>
+        </div>
+        <div class="phase-card">
+          <div class="phase-label">During-Trip</div>
+          <h4>Live Guidance</h4>
+          <ol class="phase-list">
+            <li><span>Trip timeline with live flight updates.</span></li>
+            <li><span>Airport discovery and rewards.</span></li>
+            <li><span>Baggage tracking across airlines.</span></li>
+            <li><span>Flight irregularity rescheduling.</span></li>
+            <li><span>Guided connections and support.</span></li>
+          </ol>
+        </div>
+        <div class="phase-card">
+          <div class="phase-label">Post-Trip</div>
+          <h4>Travel Logging</h4>
+          <ol class="phase-list">
+            <li><span>Points progress towards membership and rewards.</span></li>
+            <li><span>Travel statistics and shareable flight map.</span></li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- PRE-TRIP -->
+    <section class="case-section" id="pretrip">
+      <div class="section-layout">
+        <h2 class="section-heading" style="text-transform:none;">Pre-Trip</h2>
+        <div class="section-body">
+          <p>To address preparation time and research stress, travel preparation logistics are unified in one timeline. Airline-specific baggage guidance is provided through AR measurement and destination itinerary suggestions with nearby attractions and restaurants are included to jumpstart trip planning.</p>
+        </div>
+      </div>
+      <div class="pretrip-grid" style="margin-top: 32px;">
+
+        <!-- Row 1 -->
+        <div class="pretrip-cell">
+          <video src="staralliance-entry.mov" autoplay loop muted playsinline class="pretrip-media"></video>
+          <p class="img-caption">Star Alliance Entry</p>
+        </div>
+        <div class="pretrip-cell">
+          <img src="staralliance-account.png" alt="Create an Account" class="pretrip-media">
+          <p class="img-caption">Create an Account</p>
+        </div>
+
+        <!-- Row 2 -->
+        <div class="pretrip-cell">
+          <img src="staralliance-boardingpass-context.png" alt="Boarding Pass Context" class="pretrip-media">
+          <p class="img-caption">Boarding Pass Context</p>
+        </div>
+        <div class="pretrip-cell">
+          <video src="staralliance-boardingpass.mov" autoplay loop muted playsinline class="pretrip-media"></video>
+          <p class="img-caption">Boarding Pass on Dashboard</p>
+        </div>
+
+        <!-- Row 3 -->
+        <div class="pretrip-cell">
+          <video src="staralliance-baggage.mov" autoplay loop muted playsinline class="pretrip-media"></video>
+          <p class="img-caption">Baggage Information</p>
+        </div>
+        <div class="pretrip-cell">
+          <video src="staralliance-documents.mov" autoplay loop muted playsinline class="pretrip-media"></video>
+          <p class="img-caption">Document Preparation Checklist</p>
+        </div>
+
+        <!-- Row 4 -->
+        <div class="pretrip-cell">
+          <img src="staralliance-destinationinformation.png" alt="Destination Information" class="pretrip-media">
+          <p class="img-caption">Destination Information</p>
+        </div>
+        <div class="pretrip-cell">
+          <img src="staralliance-destinationitinerary.png" alt="Destination Itinerary Suggestions" class="pretrip-media">
+          <p class="img-caption">Destination Itinerary Suggestions</p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- DURING-TRIP -->
+    <section class="case-section" id="duringtrip">
+      <div class="section-layout">
+        <h2 class="section-heading" style="text-transform:none;">During-Trip</h2>
+        <div class="section-body">
+          <p>Travellers get a live updating timeline of events to prepare them for the next steps. Missed or cancelled flights can be rescheduled from the app, giving travellers agency over their schedule. Unique airport sights, lounges and restaurants are highlighted to make airports a memorable experience.</p>
+        </div>
+      </div>
+      <div class="pretrip-grid" style="margin-top: 32px;">
+
+        <!-- Row 1: image + video -->
+        <div class="pretrip-cell">
+          <img src="staralliance-notification.png" alt="Timeline Update Notification" class="pretrip-media">
+          <p class="img-caption">Timeline Update Notification</p>
+        </div>
+        <div class="pretrip-cell">
+          <video src="staralliance-triptimeline.mov" autoplay loop muted playsinline class="pretrip-media"></video>
+          <p class="img-caption">Live Trip Timeline</p>
+        </div>
+
+        <!-- Row 2: video + image -->
+        <div class="pretrip-cell">
+          <video src="staralliance-airportamenities.mov" autoplay loop muted playsinline class="pretrip-media"></video>
+          <p class="img-caption">Explore Airport Amenities</p>
+        </div>
+        <div class="pretrip-cell">
+          <img src="staralliance-cards.png" alt="Lounge Collectible Cards" class="pretrip-media">
+          <p class="img-caption">Lounge Collectible Cards</p>
+        </div>
+
+        <!-- Row 3: image + image -->
+        <div class="pretrip-cell">
+          <img src="staralliance-baggage-track.png" alt="Baggage Tracking Across Airlines" class="pretrip-media">
+          <p class="img-caption">Baggage Tracking Across Airlines</p>
+        </div>
+        <div class="pretrip-cell">
+          <img src="staralliance-disasterrecovery.png" alt="Support During Flight Irregularity" class="pretrip-media">
+          <p class="img-caption">Support During Flight Irregularity</p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- POST-TRIP -->
+    <section class="case-section" id="posttrip">
+      <div class="section-layout">
+        <h2 class="section-heading" style="text-transform:none;">Post-Trip</h2>
+        <div class="section-body">
+          <p>Completed flights are displayed on a shareable flight map along with lifetime travel stats. Points are presented as free flight offers and progress towards membership, encouraging continued trip booking.</p>
+        </div>
+      </div>
+      <div class="pretrip-grid" style="margin-top: 32px;">
+
+        <!-- Row 1: video + image -->
+        <div class="pretrip-cell">
+          <video src="staralliance-travellog.mov" autoplay loop muted playsinline class="pretrip-media"></video>
+          <p class="img-caption">Past Flights and Travel Log</p>
+        </div>
+        <div class="pretrip-cell">
+          <img src="staralliance-exchangecards.png" alt="Travel Statistics and Social Exchange Cards" class="pretrip-media">
+          <p class="img-caption">Travel Statistics and Social Exchange Cards</p>
+        </div>
+
+        <!-- Row 2: image + video -->
+        <div class="pretrip-cell">
+          <img src="staralliance-points.png" alt="Airline Progress and Loyalty Points" class="pretrip-media">
+          <p class="img-caption">Airline Progress and Loyalty Points</p>
+        </div>
+        <div class="pretrip-cell">
+          <video src="staralliance-points.mov" autoplay loop muted playsinline class="pretrip-media"></video>
+          <p class="img-caption">Airline Rewards System</p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- DESIGN SYSTEM -->
+    <section class="case-section" id="designsystem">
+      <div class="section-layout">
+        <h2 class="section-heading">Design System</h2>
+        <div class="section-body">
+          <p>A blue gradient sets a calm tone for trusted air travel and subtle animated illustrations guide attention and reduce cognitive load. Green colour on time indicators reinforces a sense of calm and timeliness. Standard airport wayfinding signs are adopted to minimize cognitive load by matching familiar visual patterns.</p>
+          <p>Travel is stressful and overwhelming, so subtle, responsive animations are used to create a calm interface, allowing travellers to focus on their journey.</p>
+        </div>
+      </div>
+      <div class="img-block-full" style="margin-top: 32px;">
+        <img src="sa-designsystem.png" alt="Star Alliance Design System">
+      </div>
+      <p class="img-caption" style="margin-top: 10px;">Star Alliance Design System</p>
+    </section>
+
+    <!-- PROCESS -->
+    <!-- REFLECTION -->
+    <section class="case-section" id="reflection">
+      <div class="section-layout">
+        <h2 class="section-heading">My Reflection</h2>
+        <div class="section-body">
+          <p>This project challenged me to think beyond individual flights and design for the full emotional arc of travel. By grounding design decisions in real traveller insights and iterating through three distinct scopes, our team was able to arrive at a solution that meaningfully addresses the anxiety new travellers often experience.</p>
+          <p>I learned to balance ideas with real-world limits. Not every problem can be solved through design. Things like long wait times, unpredictable queues, and security procedures were outside our control. Understanding this helped me see where design can truly make an impact and where bigger system changes are needed.</p>
+          <p>Overall, this project improved my ability to work within constraints, focus on user needs and keep refining ideas. It was a valuable learning experience that strengthened both my design thinking and problem-solving skills.</p>
+        </div>
+      </div>
+      <div style="margin-top: 32px;">
+        <div class="two-col-imgs">
+          <img src="staralliance-r1.png" alt="Final Presentation Day" style="width:100%;aspect-ratio:16/10;object-fit:cover;display:block;border-radius:4px;">
+          <img src="staralliance-r2.png" alt="Final Presentation Day" style="width:100%;aspect-ratio:16/10;object-fit:cover;display:block;border-radius:4px;">
+        </div>
+        <p class="img-caption" style="margin-top: 10px; text-align: center;">Final Presentation Day</p>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<div style="height:1px;background:var(--beige);display:block;width:100%;"></div>
+
+<section style="padding:80px 48px;min-height:380px;display:flex;flex-direction:column;justify-content:space-between;">
+  <h2 style="font-size:clamp(48px,6.5vw,96px);font-weight:700;letter-spacing:-0.04em;line-height:0.92;color:var(--black);align-self:flex-start;">INTERESTED IN<br>WORKING TOGETHER?</h2>
+  <div style="display:flex;flex-direction:column;gap:20px;align-self:flex-end;margin-top:60px;">
+    <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-start;">
+      <span style="font-size:13px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--grey-mid);">Email</span>
+      <a href="mailto:mansimar_wadhera@sfu.ca" class="cta-link-value" data-text="mansimar_wadhera@sfu.ca" style="font-size:20px;font-weight:400;color:transparent;text-decoration:none;position:relative;display:inline-block;overflow:hidden;padding-bottom:2px;">mansimar_wadhera@sfu.ca</a>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-start;">
+      <span style="font-size:13px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--grey-mid);">LinkedIn</span>
+      <a href="https://linkedin.com/in/mansimarwadhera10-bb5537276" target="_blank" class="cta-link-value" data-text="Mansimar Wadhera" style="font-size:20px;font-weight:400;color:transparent;text-decoration:none;position:relative;display:inline-block;overflow:hidden;padding-bottom:2px;">Mansimar Wadhera</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span>© 2026 Mansimar Wadhera</span>
+  <span>Updated May 10, 2026</span>
+</footer>
+
+<style>
+.cta-link-value::before { content: attr(data-text); position: absolute; top: 0; left: 0; color: var(--black); transition: transform 0.3s cubic-bezier(.22,1,.36,1); }
+.cta-link-value::after { content: attr(data-text); position: absolute; top: 100%; left: 0; color: var(--black); transition: transform 0.3s cubic-bezier(.22,1,.36,1); text-decoration: underline; text-underline-offset: 4px; }
+.cta-link-value:hover::before { transform: translateY(-100%); }
+.cta-link-value:hover::after { transform: translateY(-100%); }
+</style>
+
+<!-- PROTO LINK CSS -->
+<style>
+.proto-link { font-weight: 700; color: var(--black); text-decoration: none; border-bottom: 1.5px solid transparent; transition: border-color 0.2s; }
+.proto-link:hover { border-bottom-color: var(--black); }
+</style>
+
+<script>
+const blob = document.getElementById('blob');
+let bx = -100, by = -100, mx = -100, my = -100;
+function lerp(a,b,t){ return a+(b-a)*t; }
+(function tick(){
+  bx = lerp(bx, mx, 0.13); by = lerp(by, my, 0.13);
+  blob.style.left = bx+'px'; blob.style.top = by+'px';
+  requestAnimationFrame(tick);
+})();
+document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+document.querySelectorAll('a, button').forEach(el => {
+  el.addEventListener('mouseenter', () => blob.classList.add('expanded'));
+  el.addEventListener('mouseleave', () => blob.classList.remove('expanded'));
+});
+document.addEventListener('mousedown', () => blob.classList.add('clicking'));
+document.addEventListener('mouseup', () => blob.classList.remove('clicking'));
+
+
+/* Sidebar active on scroll */
+const sections = document.querySelectorAll('.case-section');
+const sidebarLinks = document.querySelectorAll('.sidebar-nav a');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      sidebarLinks.forEach(link => link.classList.remove('active'));
+      const id = entry.target.getAttribute('id');
+      const activeLink = document.querySelector(`.sidebar-nav a[href="#${id}"]`);
+      if (activeLink) activeLink.classList.add('active');
+    }
+  });
+}, { rootMargin: '-20% 0px -70% 0px' });
+sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>
