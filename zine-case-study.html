@@ -78,6 +78,10 @@ footer { border-top: 1px solid var(--beige); padding: 24px 48px; display: flex; 
   .section-heading { position: static; } .two-col-imgs { grid-template-columns: 1fr; }
   footer { padding: 20px; flex-direction: column; gap: 10px; text-align: center; }
 }
+.finding-grid { display: flex; flex-direction: column; gap: 0; margin-top: 8px; }
+.finding-card { padding: 20px 0; border-bottom: 1px solid var(--beige); display: block; }
+.finding-card-text h4 { font-size: 15px; font-weight: 500; color: var(--black); margin-bottom: 8px; }
+.finding-card-text p { font-size: 13px; line-height: 1.65; color: var(--grey-text); }
 </style>
 </head>
 <body>
@@ -144,8 +148,8 @@ footer { border-top: 1px solid var(--beige); padding: 24px 48px; display: flex; 
       <div class="section-layout">
         <h2 class="section-heading">Project Overview</h2>
         <div class="section-body">
-          <p>Language in the Landscape is a pocket zine exploring the relationship between Indigenous language and the natural landscape of British Columbia. Developed in collaboration with City Studio Vancouver through SFU's PUB 438 course, the project examines how place names carry history, identity and meaning that are often lost in translation.</p>
-          <p>The zine was designed to be accessible to a general public audience while honouring the gravity and significance of Indigenous language and place — balancing visual design with cultural respect and editorial clarity.</p>
+          <p>Language in the Landscape is a pocket zine that explores the relationship between Indigenous languages and the natural landscape of British Columbia. It highlights how place names rooted in the languages of the xwməθkwəy̓əm (Musqueam), Sḵwx̱wú7mesh (Squamish) and səlilwətaɬ (Tsleil-Waututh) Indigenous Nations carry deep cultural knowledge, history and identity that are often lost or altered through translation and colonization.</p>
+          <p>The project was designed to be accessible to a general public audience while honouring the gravity and significance of Indigenous language and place, balancing visual design with cultural respect and editorial clarity.</p>
         </div>
       </div>
     </section>
@@ -164,8 +168,9 @@ footer { border-top: 1px solid var(--beige); padding: 24px 48px; display: flex; 
       <div class="section-layout">
         <h2 class="section-heading">Problem Statement</h2>
         <div class="section-body">
+          <p><strong>How might we design a publication that makes Indigenous language and its relationship to landscape legible, approachable and meaningful to a general audience, without reducing or misrepresenting the communities it draws from?</strong></p>
           <p>Indigenous place names across British Columbia carry layers of meaning — ecological, cultural, spiritual and historical — that are invisible when only the colonial name is known. Most people who live and move through these landscapes have no access to the Indigenous languages that named them first.</p>
-          <p><strong>How might we design a publication that makes Indigenous language and its relationship to landscape legible, approachable and meaningful to a general audience — without reducing or misrepresenting the communities it draws from?</strong></p>
+          <p><strong>How might designers support Indigenous-led place renaming initiatives by creating publications that foster understanding, correct pronunciation, and long-term language visibility?</strong></p>
         </div>
       </div>
     </section>
@@ -174,7 +179,13 @@ footer { border-top: 1px solid var(--beige); padding: 24px 48px; display: flex; 
       <div class="section-layout">
         <h2 class="section-heading">Research Methodology</h2>
         <div class="section-body">
-          <p>Research for this project focused on understanding the relationship between Indigenous language, land and identity through secondary sources, existing publications and editorial precedents. The goal was to develop enough context to approach the subject with care and accuracy, and to identify a visual and editorial language that felt respectful rather than extractive.</p>
+          <p>We began by exploring how similar zines and publications had been created, studying their layouts, storytelling approaches and visual styles through online archives and platforms such as Pinterest. We then researched content by exploring Indigenous language preservation resources and community-based storytelling platforms.</p>
+          <div class="finding-grid" style="margin-top:16px;">
+            <div class="finding-card"><div class="finding-card-text"><h4>Indigenous Language Resources</h4><p>We explored FirstVoices — an online platform dedicated to sharing and revitalizing Indigenous languages, oral histories and cultural knowledge. We also reviewed the Squamish Nation Language & Cultural Resources and the Tsleil-Waututh Nation Culture & Language page.</p></div></div>
+            <div class="finding-card"><div class="finding-card-text"><h4>City of Vancouver Indigenous Resources</h4><p>We referred to City of Vancouver Indigenous resources to learn about land acknowledgements, Indigenous histories and connections to place — ensuring our research remained respectful and community-focused.</p></div></div>
+            <div class="finding-card"><div class="finding-card-text"><h4>Indigenous Visual Traditions</h4><p>We studied Indigenous artwork and visual traditions to inform how we might present the zine respectfully, avoiding decorative use of cultural imagery and focusing on language, land and community.</p></div></div>
+            <div class="finding-card"><div class="finding-card-text"><h4>Zine Format Research</h4><p>We compiled a moodboard of zine examples to identify formats, visual systems and editorial approaches that felt accessible and appropriate for a general public audience encountering Indigenous language for the first time.</p></div></div>
+          </div>
         </div>
       </div>
     </section>
@@ -192,14 +203,30 @@ footer { border-top: 1px solid var(--beige); padding: 24px 48px; display: flex; 
       <div class="section-layout">
         <h2 class="section-heading">Design Process</h2>
         <div class="section-body">
-          <p>The design process began with editorial structure — deciding what content to include, how to sequence it and how to create a reading experience that felt intentional and unhurried. The pocket format was chosen deliberately: small enough to feel personal and portable, but substantial enough to communicate with depth.</p>
-          <p>Typography, whitespace and colour were selected to feel grounded and restrained, allowing the language and landscape content to breathe. Multiple layout iterations were explored before arriving at a grid system that balanced visual clarity with the weight of the subject matter.</p>
+          <p>The design process began with editorial structure — deciding what content to include, how to sequence it and how to create a reading experience that felt like storytelling. The pocket format was chosen deliberately: small enough to feel personal and portable, but substantial enough to communicate with depth. We went through several iterations, progressively simplifying the content and refining the layout until the zine guided users naturally from acknowledgment through to learning, reflection and the map.</p>
         </div>
       </div>
+
       <div class="img-block-full" style="margin-top: 32px;">
-        <img src="zine.png" alt="Language in the Landscape Zine">
+        <img src="zine-draft1.png" alt="First Draft">
       </div>
-      <p class="img-caption" style="margin-top: 10px;">Language in the Landscape — Zine Cover</p>
+      <p class="img-caption" style="margin-top: 10px;">First Draft: Content Heavy Wireframes</p>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:24px;">
+        <img src="zine-draft2.png" alt="Draft 2" style="width:100%;aspect-ratio:16/10;object-fit:cover;display:block;border-radius:4px;">
+        <img src="zine-draft3.png" alt="Draft 3" style="width:100%;aspect-ratio:16/10;object-fit:cover;display:block;border-radius:4px;">
+      </div>
+      <p class="img-caption" style="margin-top: 10px; text-align:center;">Printing to Finalize Content and Font Choice — Style and Size</p>
+
+      <div class="img-block-full" style="margin-top: 24px;">
+        <img src="zine-draft4.png" alt="Patterns and Watermarks">
+      </div>
+      <p class="img-caption" style="margin-top: 10px;">Exploring Patterns and Watermarks Visual Design Style</p>
+
+      <div class="img-block-full" style="margin-top: 24px;">
+        <img src="zine-draft5.png" alt="Printed Iterations">
+      </div>
+      <p class="img-caption" style="margin-top: 10px;">Printed Iterations during the Project Timeline</p>
     </section>
 
     <section class="case-section" id="solution">
